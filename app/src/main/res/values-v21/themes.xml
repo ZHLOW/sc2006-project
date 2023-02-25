@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.LoginRegister.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.ThemeTest" parent="Theme.AppCompat.NoActionBar">
+        ...
+        <item name="android:windowBackground">?attr/colorOnPrimary</item>
+    </style>
+</resources>

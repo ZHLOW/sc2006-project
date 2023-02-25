@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.meetpoint.AddFriendsFragment"
+    android:id="@+id/Add_Friends_Container">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/Add_Friends_List"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="95dp" >
+
+    </androidx.recyclerview.widget.RecyclerView>
+    <Button
+        android:id="@+id/AddFriendByIdButton"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_alignRight="@id/Add_Friends_List"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="#FF007569"
+        android:text="Add by ID"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:visibility="visible">
+    </Button>
+
+    <Button
+        android:id="@+id/BackButton"
+        android:layout_width="55dp"
+        android:layout_height="45dp"
+        android:layout_alignLeft="@id/Add_Friends_List"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="#FF007569"
+        android:text="Back"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:visibility="visible">
+    </Button>
+
+    <EditText
+        android:id="@+id/add_Friend_EditText"
+        android:layout_width="300dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="5dp"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+
+    </EditText>
+
+
+</RelativeLayout>
