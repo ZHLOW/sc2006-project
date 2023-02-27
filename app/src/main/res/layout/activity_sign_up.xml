@@ -68,7 +68,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="30dp"
-        android:hint="@string/reg_password"
+        android:hint="Enter password (At least 6 characters)"
         app:boxCollapsedPaddingTop="15dp"
         app:boxCornerRadiusBottomEnd="15dp"
         app:boxCornerRadiusBottomStart="15dp"
