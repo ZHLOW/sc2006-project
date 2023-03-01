@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.appcompat.widget.*;
 import androidx.core.view.*;
@@ -95,6 +96,11 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void goToMapview(View v) {
+        Intent i = new Intent(this, Mapview.class);
+        startActivity(i);
     }
 
 }
