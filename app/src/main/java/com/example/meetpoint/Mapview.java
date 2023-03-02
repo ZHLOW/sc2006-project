@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -34,6 +35,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,6 +56,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
     private static final float DEFAULT_ZOOM = 15f;
+
 
 
     @Override
@@ -153,6 +157,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             //Log.e(TAG, "getDeviceLocation: SecurityException: "+e.getMessage());
         }
     }
+
 
     private void moveCamera(LatLng latLng, float zoom, String title){
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
