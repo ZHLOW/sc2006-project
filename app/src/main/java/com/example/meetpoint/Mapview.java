@@ -35,6 +35,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -69,6 +70,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private static final float DEFAULT_ZOOM = 15f;
     private PlaceInfo mPlace;
     private Marker mMarker;
+    private LatLngBounds SG = new LatLngBounds(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359));
 
 
 
@@ -101,6 +103,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
         autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
         autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
+        autocompleteFragment.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
+        autocompleteFragment.setCountries("SG");
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
         //mSearchText = (EditText) findViewById(R.id.input_search);
         mGps = (ImageView) findViewById(R.id.ic_gps);
@@ -113,6 +117,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
+
+        // Constrain the camera target to Singapore.
+        mMap.setLatLngBoundsForCameraTarget(SG);
 
         if (mLocationPermissionsGranted) {
             getDeviceLocation();
