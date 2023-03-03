@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -25,6 +26,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,21 +35,29 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
     //widgets
     private EditText mSearchText;
-    private ImageView mGps;
+    private ImageView mGps, mInfo;
+    private AutocompleteSupportFragment autocompleteFragment;
 
     //vars
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -56,16 +67,44 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
     private static final float DEFAULT_ZOOM = 15f;
+    private PlaceInfo mPlace;
+    private Marker mMarker;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Places.initialize(getApplicationContext(), "AIzaSyBcPAPb1wZzbRHda01bSt_ft_LpLjfJhiE");
+        PlacesClient placesClient = Places.createClient(this);
         setContentView(R.layout.activity_mapview);
 
-        mSearchText = (EditText) findViewById(R.id.input_search);
+        /*AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        autocompleteFragment.setTypeFilter(TypeFilter.ADDRESS);
+
+        autocompleteFragment.setLocationBias(RectangularBounds.newInstance(new LatLng(-33.880490,151.184363),new LatLng(-33.858754,151.229596)));
+        autocompleteFragment.setCountries("IN");
+
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onError(@NonNull Status status) {}
+
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                Log.i(TAG, "Place: "+place.getName()+","+place.getId());
+            }
+        }); */
+
+        autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        //mSearchText = (EditText) findViewById(R.id.input_search);
         mGps = (ImageView) findViewById(R.id.ic_gps);
+        mInfo = (ImageView) findViewById(R.id.place_info);
 
         getLocationPermission();
 
@@ -88,9 +127,111 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
-    private void initMap() {
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(Mapview.this);
+    private void init(){
+       /* mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH
+                        || actionId == EditorInfo.IME_ACTION_DONE
+                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
+                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
+
+                    geoLocate();
+                }
+                return false;
+            }
+        }); */
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onError(@NonNull Status status) {}
+
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                geoLocate();
+            }
+        });
+        mGps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getDeviceLocation();
+            }
+        });
+
+        mInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try{
+                    if(mMarker.isInfoWindowShown()){
+                        mMarker.hideInfoWindow();
+                    }
+                    else{
+                        mMarker.showInfoWindow();
+                    }
+                }
+                catch(NullPointerException e){}
+            }
+        });
+
+        //hideSoftKeyboard();
+    }
+
+    private void geoLocate(){
+        String searchString = autocompleteFragment.getText(0).toString(); //mSearchText.getText().toString()
+
+        Geocoder geocoder = new Geocoder(Mapview.this);
+        List<Address> list = new ArrayList<>();
+
+        try{
+            list = geocoder.getFromLocationName(searchString, 1);
+        }
+        catch(IOException e){
+        }
+
+        if(list.size()>0){
+            Address address = list.get(0);
+
+            moveCamera(new LatLng(address.getLatitude(),address.getLongitude()), DEFAULT_ZOOM, address.getAddressLine(0));
+        }
+    }
+
+    private void moveCamera(LatLng latLng, float zoom, PlaceInfo placeInfo){
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+
+        mMap.clear();
+
+        if(placeInfo != null){
+            try{
+                String snippet = "Address: "+placeInfo.getAddress()+ "\n"+
+                        "Phone Number: "+placeInfo.getPhoneNumber()+ "\n"+
+                        "Website: "+placeInfo.getWebsiteUri()+"\n"+
+                        "Price Rating: "+placeInfo.getRating()+"\n";
+
+                MarkerOptions options = new MarkerOptions().position(latLng).title(placeInfo.getName()).snippet(snippet);
+
+                mMarker = mMap.addMarker(options);
+            }
+            catch(NullPointerException e){}
+        }
+        else{
+            mMap.addMarker(new MarkerOptions().position(latLng));
+        }
+
+        hideSoftKeyboard();
+
+    }
+
+    private void moveCamera(LatLng latLng, float zoom, String title){
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+
+        if(!title.equals("My Location")){
+            MarkerOptions options = new MarkerOptions().position(latLng).title(title);
+            mMap.addMarker(options);
+        }
+
+        //hideSoftKeyboard();
+
     }
 
     private void getLocationPermission(){
@@ -159,65 +300,16 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     }
 
 
-    private void moveCamera(LatLng latLng, float zoom, String title){
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
 
-        if(!title.equals("My Location")){
-            MarkerOptions options = new MarkerOptions().position(latLng).title(title);
-            mMap.addMarker(options);
-        }
-
-        hideSoftKeyboard();
-
+    private void initMap() {
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(Mapview.this);
     }
 
-    private void init(){
-        mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH
-                || actionId == EditorInfo.IME_ACTION_DONE
-                || keyEvent.getAction() == KeyEvent.ACTION_DOWN
-                || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
 
-                    geoLocate();
-                }
-                return false;
-            }
-        });
-
-        mGps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getDeviceLocation();
-            }
-        });
-
-        hideSoftKeyboard();
-    }
-
-    private void geoLocate(){
-        String searchString = mSearchText.getText().toString();
-
-        Geocoder geocoder = new Geocoder(Mapview.this);
-        List<Address> list = new ArrayList<>();
-
-        try{
-            list = geocoder.getFromLocationName(searchString, 1);
-        }
-        catch(IOException e){
-        }
-
-        if(list.size()>0){
-            Address address = list.get(0);
-
-            moveCamera(new LatLng(address.getLatitude(),address.getLongitude()), DEFAULT_ZOOM, address.getAddressLine(0));
-        }
-    }
 
     private void hideSoftKeyboard(){
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
-
 
 }
