@@ -68,7 +68,6 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private Boolean mLocationPermissionsGranted = false;
     private GoogleMap mMap;
     private static final float DEFAULT_ZOOM = 15f;
-    private PlaceInfo mPlace;
     private Marker mMarker;
     private LatLngBounds SG = new LatLngBounds(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359));
 
@@ -201,32 +200,6 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
             moveCamera(new LatLng(address.getLatitude(),address.getLongitude()), DEFAULT_ZOOM, address.getAddressLine(0));
         }
-    }
-
-    private void moveCamera(LatLng latLng, float zoom, PlaceInfo placeInfo){
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
-
-        mMap.clear();
-
-        if(placeInfo != null){
-            try{
-                String snippet = "Address: "+placeInfo.getAddress()+ "\n"+
-                        "Phone Number: "+placeInfo.getPhoneNumber()+ "\n"+
-                        "Website: "+placeInfo.getWebsiteUri()+"\n"+
-                        "Price Rating: "+placeInfo.getRating()+"\n";
-
-                MarkerOptions options = new MarkerOptions().position(latLng).title(placeInfo.getName()).snippet(snippet);
-
-                mMarker = mMap.addMarker(options);
-            }
-            catch(NullPointerException e){}
-        }
-        else{
-            mMap.addMarker(new MarkerOptions().position(latLng));
-        }
-
-        hideSoftKeyboard();
-
     }
 
     private void moveCamera(LatLng latLng, float zoom, String title){
