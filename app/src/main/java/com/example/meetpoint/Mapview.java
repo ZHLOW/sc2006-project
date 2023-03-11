@@ -47,11 +47,15 @@ import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.maps.android.data.kml.KmlLayer;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.io.InputStream;
+
+import org.xmlpull.v1.XmlPullParserException;
 
 public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -116,8 +120,16 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
+        try {
+            InputStream inputStream = getAssets().open("eateries.kml");
+            KmlLayer layer = new KmlLayer(mMap, inputStream, getApplicationContext());
+            layer.addLayerToMap();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
 
-        // Constrain the camera target to Singapore.
         mMap.setLatLngBoundsForCameraTarget(SG);
 
         if (mLocationPermissionsGranted) {
