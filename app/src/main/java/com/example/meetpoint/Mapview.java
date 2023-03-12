@@ -273,10 +273,11 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 location.addOnCompleteListener(new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {
-                        if(task.isSuccessful()){
+                        if(task.isSuccessful() && task.getResult() != null){
                             Location currentLocation = (Location) task.getResult();
 
                             moveCamera(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()), DEFAULT_ZOOM, "My Location");
+                            Toast.makeText(Mapview.this, " Got current location successfully", Toast.LENGTH_SHORT).show();
                         }
                         else{
                             Toast.makeText(Mapview.this, "unable to get current location", Toast.LENGTH_SHORT).show();
