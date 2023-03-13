@@ -121,8 +121,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
         try {
-            InputStream inputStream = getAssets().open("eateries.kml");
-            KmlLayer layer = new KmlLayer(mMap, inputStream, getApplicationContext());
+            KmlLayer layer = new KmlLayer(mMap, R.raw.eateries, getApplicationContext());
             layer.addLayerToMap();
         } catch (IOException e) {
             e.printStackTrace();
