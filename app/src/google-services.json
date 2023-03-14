@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "451676049147",
+    "firebase_url": "https://auth-d2b72-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "auth-d2b72",
+    "storage_bucket": "auth-d2b72.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451676049147:android:86d5a93c3e37e8ed5b2a5e",
+        "android_client_info": {
+          "package_name": "com.example.loginregister"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "451676049147-b60agij3qv3nt23jd0l3ia9ag8v2psof.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4xcxSX_FutmDF9k0lrFDv1Te1ggdYM2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451676049147-b60agij3qv3nt23jd0l3ia9ag8v2psof.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451676049147:android:ec21d2e8461e9a9c5b2a5e",
+        "android_client_info": {
+          "package_name": "com.example.meetpoint"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "451676049147-b60agij3qv3nt23jd0l3ia9ag8v2psof.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4xcxSX_FutmDF9k0lrFDv1Te1ggdYM2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "451676049147-b60agij3qv3nt23jd0l3ia9ag8v2psof.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

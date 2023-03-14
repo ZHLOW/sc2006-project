@@ -96,7 +96,7 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
             textInputEditTextPassword.setError("Field can't be empty");
             return false;
         } else if (!PASSWORD_PATTERN.matcher(passwordInput).matches()) {
-            textInputEditTextPassword.setError("Password too weak");
+            textInputEditTextPassword.setError("Password must have at least 1 number, alphabet and special character");
             textInputEditTextPassword.requestFocus();
             return false;
         } else {

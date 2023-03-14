@@ -4,6 +4,9 @@
     package="com.example.meetpoint">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -14,9 +17,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBcPAPb1wZzbRHda01bSt_ft_LpLjfJhiE" >
+
+        </meta-data>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".Mapview"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
 <<<<<<< Updated upstream
-            android:name="com.example.meetpoint.Login"
+            android:name=".Login"
 =======
             android:name=".Mapview"
             android:exported="true"
@@ -33,31 +51,29 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.meetpoint.SignUp"
+            android:name=".SignUp"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.example.meetpoint.ChatFragment"
+            android:name=".ChatFragment"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             tools:ignore="Instantiatable" />
         <activity
-            android:name="com.example.meetpoint.ForgotPassword"
+            android:name=".ForgotPassword"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.example.meetpoint.HomePage"
+            android:name=".HomePage"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name="com.example.meetpoint.ChatActivity"
+            android:name=".ChatActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:parentActivityName=".ChatFragment">
-        </activity>
-
+            android:parentActivityName=".ChatFragment"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity
-            android:name="com.example.meetpoint.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
