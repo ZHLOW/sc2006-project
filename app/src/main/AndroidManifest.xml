@@ -33,15 +33,7 @@
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
-<<<<<<< Updated upstream
             android:name=".Login"
-=======
-            android:name=".Mapview"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"/>
-        <activity
-            android:name=".Login"
->>>>>>> Stashed changes
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
