@@ -128,6 +128,14 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         }
+        try {
+            KmlLayer layer2 = new KmlLayer(mMap, R.raw.parks, getApplicationContext());
+            layer2.addLayerToMap();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
 
         mMap.setLatLngBoundsForCameraTarget(SG);
 
