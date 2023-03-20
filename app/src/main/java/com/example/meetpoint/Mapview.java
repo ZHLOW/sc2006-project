@@ -48,6 +48,16 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.maps.android.data.kml.KmlLayer;
+import com.google.maps.android.data.Feature;
+import com.google.maps.android.data.Geometry;
+import com.google.maps.android.data.Point;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.Place.Field;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import androidx.appcompat.app.AlertDialog;
+import android.content.DialogInterface;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -123,6 +133,20 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         try {
             KmlLayer layer = new KmlLayer(mMap, R.raw.eateries, getApplicationContext());
             layer.addLayerToMap();
+            layer.setOnFeatureClickListener(new KmlLayer.OnFeatureClickListener() {
+                @Override
+                public void onFeatureClick(Feature feature) {
+                    Geometry geometry = feature.getGeometry();
+                    Log.i("KML", "Feature clicked: " + feature.getId());
+                    if (geometry instanceof Point) {
+                        LatLng position = ((Point) geometry).getGeometryObject();
+                        String placeId = feature.getProperty("place_id");
+                        if (placeId != null) {
+                            showGoogleInformation(placeId, position);
+                        }
+                    }
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         } catch (XmlPullParserException e) {
@@ -311,5 +335,38 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private void hideSoftKeyboard(){
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
+    private void showGoogleInformation(String placeId, LatLng position) {
+        PlacesClient placesClient = Places.createClient(this);
+        List<Field> placeFields = Arrays.asList(Field.ID, Field.NAME, Field.ADDRESS, Field.PHONE_NUMBER, Field.WEBSITE_URI, Field.RATING, Field.USER_RATINGS_TOTAL);
+        FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
+        placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
+            Place place = response.getPlace();
+            displayPlaceInformation(place);
+        }).addOnFailureListener((exception) -> {
+            Log.e("MapsActivity", "Error fetching place details", exception);
+        });
+    }
+    private void displayPlaceInformation(Place place) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(place.getName());
+        String info = String.format(
+                "Address: %s\nPhone: %s\nWebsite: %s\nRating: %.1f (based on %d user ratings)",
+                place.getAddress(),
+                place.getPhoneNumber(),
+                place.getWebsiteUri() != null ? place.getWebsiteUri().toString() : "N/A",
+                place.getRating(),
+                place.getUserRatingsTotal()
+        );
 
+        builder.setMessage(info);
+        builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
 }
