@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -41,9 +42,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
@@ -131,11 +134,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
         try {
-            KmlLayer layer = new KmlLayer(mMap, R.raw.parks, getApplicationContext());
+            KmlLayer layer = new KmlLayer(mMap, R.raw.eateries, getApplicationContext());
             layer.addLayerToMap();
-            for (Feature feature : layer.getFeatures()) {
-                Log.i("KML", "Feature: " + feature.getId());
-            }
             layer.setOnFeatureClickListener(new KmlLayer.OnFeatureClickListener() {
                 @Override
                 public void onFeatureClick(Feature feature) {
@@ -144,9 +144,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     if (geometry instanceof Point) {
                         LatLng position = ((Point) geometry).getGeometryObject();
                         displayLocationInformation(position); // Display the location information
-                        String placeId = feature.getProperty("place_id");
-                        if (placeId != null) {
-                            showGoogleInformation(placeId, position);
+                        String name = feature.getProperty("NAME");
+                        if (name != null) {
+                            searchGooglePlace(name, position);
                         }
                     }
                 }
@@ -157,8 +157,23 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             e.printStackTrace();
         }
         /*try {
-            KmlLayer layer2 = new KmlLayer(mMap, R.raw.parks, getApplicationContext());
+            KmlLayer layer2 = new KmlLayer(mMap, R.raw.relax, getApplicationContext());
             layer2.addLayerToMap();
+            layer2.setOnFeatureClickListener(new KmlLayer.OnFeatureClickListener() {
+                @Override
+                public void onFeatureClick(Feature feature) {
+                    Geometry geometry = feature.getGeometry();
+                    Log.i("KML", "Feature clicked: " + feature.getId());
+                    if (geometry instanceof Point) {
+                        LatLng position = ((Point) geometry).getGeometryObject();
+                        //displayLocationInformation(position); // Display the location information
+                        String name = feature.getProperty("name");
+                        if (name != null) {
+                            searchGooglePlace(name, position);
+                        }
+                    }
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         } catch (XmlPullParserException e) {
@@ -387,5 +402,30 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+    private void searchGooglePlace(String name, LatLng position) {
+        PlacesClient placesClient = Places.createClient(this);
+        RectangularBounds bounds = RectangularBounds.newInstance(
+                new LatLng(position.latitude - 0.01, position.longitude - 0.01),
+                new LatLng(position.latitude + 0.01, position.longitude + 0.01)
+        );
+
+        FindAutocompletePredictionsRequest request = FindAutocompletePredictionsRequest.builder()
+                .setLocationBias(bounds)
+                .setQuery(name)
+                .build();
+
+        placesClient.findAutocompletePredictions(request).addOnSuccessListener((response) -> {
+            for (AutocompletePrediction prediction : response.getAutocompletePredictions()) {
+                Log.i("KML", "Place found: " + prediction.getPlaceId());
+                showGoogleInformation(prediction.getPlaceId(), position);
+                break;
+            }
+        }).addOnFailureListener((exception) -> {
+            if (exception instanceof ApiException) {
+                ApiException apiException = (ApiException) exception;
+                Log.e("KML", "Place not found: " + apiException.getStatusCode());
+            }
+        });
     }
 }
