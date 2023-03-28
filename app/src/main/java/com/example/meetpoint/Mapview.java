@@ -131,8 +131,11 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
         try {
-            KmlLayer layer = new KmlLayer(mMap, R.raw.eateries, getApplicationContext());
+            KmlLayer layer = new KmlLayer(mMap, R.raw.parks, getApplicationContext());
             layer.addLayerToMap();
+            for (Feature feature : layer.getFeatures()) {
+                Log.i("KML", "Feature: " + feature.getId());
+            }
             layer.setOnFeatureClickListener(new KmlLayer.OnFeatureClickListener() {
                 @Override
                 public void onFeatureClick(Feature feature) {
@@ -140,6 +143,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     Log.i("KML", "Feature clicked: " + feature.getId());
                     if (geometry instanceof Point) {
                         LatLng position = ((Point) geometry).getGeometryObject();
+                        displayLocationInformation(position); // Display the location information
                         String placeId = feature.getProperty("place_id");
                         if (placeId != null) {
                             showGoogleInformation(placeId, position);
@@ -152,14 +156,14 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         }
-        try {
+        /*try {
             KmlLayer layer2 = new KmlLayer(mMap, R.raw.parks, getApplicationContext());
             layer2.addLayerToMap();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (XmlPullParserException e) {
             e.printStackTrace();
-        }
+        }*/
 
         mMap.setLatLngBoundsForCameraTarget(SG);
 
@@ -359,6 +363,21 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         );
 
         builder.setMessage(info);
+        builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+    private void displayLocationInformation(LatLng position) {
+        String locationInfo = String.format("Latitude: %s\nLongitude: %s", position.latitude, position.longitude);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Location Information");
+        builder.setMessage(locationInfo);
         builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
