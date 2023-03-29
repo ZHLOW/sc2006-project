@@ -134,7 +134,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
         try {
-            KmlLayer layer = new KmlLayer(mMap, R.raw.eateries, getApplicationContext());
+            KmlLayer layer = new KmlLayer(mMap, R.raw.eateries2, getApplicationContext());
             layer.addLayerToMap();
             layer.setOnFeatureClickListener(new KmlLayer.OnFeatureClickListener() {
                 @Override
@@ -144,7 +144,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     if (geometry instanceof Point) {
                         LatLng position = ((Point) geometry).getGeometryObject();
                         displayLocationInformation(position); // Display the location information
-                        String name = feature.getProperty("NAME");
+                        String name = feature.getProperty("name");
                         if (name != null) {
                             searchGooglePlace(name, position);
                         }
