@@ -21,6 +21,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -87,8 +88,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private static final float DEFAULT_ZOOM = 15f;
     private Marker mMarker;
     private LatLngBounds SG = new LatLngBounds(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359));
-
-
+    private KmlLayer layer1;
+    private KmlLayer layer2;
+    private boolean isLayer1Visible = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,52 +135,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
-        try {
-            KmlLayer layer = new KmlLayer(mMap, R.raw.eateries2, getApplicationContext());
-            layer.addLayerToMap();
-            layer.setOnFeatureClickListener(new KmlLayer.OnFeatureClickListener() {
-                @Override
-                public void onFeatureClick(Feature feature) {
-                    Geometry geometry = feature.getGeometry();
-                    Log.i("KML", "Feature clicked: " + feature.getId());
-                    if (geometry instanceof Point) {
-                        LatLng position = ((Point) geometry).getGeometryObject();
-                        displayLocationInformation(position); // Display the location information
-                        String name = feature.getProperty("name");
-                        if (name != null) {
-                            searchGooglePlace(name, position);
-                        }
-                    }
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        }
-        /*try {
-            KmlLayer layer2 = new KmlLayer(mMap, R.raw.relax, getApplicationContext());
-            layer2.addLayerToMap();
-            layer2.setOnFeatureClickListener(new KmlLayer.OnFeatureClickListener() {
-                @Override
-                public void onFeatureClick(Feature feature) {
-                    Geometry geometry = feature.getGeometry();
-                    Log.i("KML", "Feature clicked: " + feature.getId());
-                    if (geometry instanceof Point) {
-                        LatLng position = ((Point) geometry).getGeometryObject();
-                        //displayLocationInformation(position); // Display the location information
-                        String name = feature.getProperty("name");
-                        if (name != null) {
-                            searchGooglePlace(name, position);
-                        }
-                    }
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        }*/
+        loadKmlLayers(isLayer1Visible);
 
         mMap.setLatLngBoundsForCameraTarget(SG);
 
@@ -190,7 +147,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             }
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false);
-
+            init2();
             init();
         }
     }
@@ -384,22 +341,13 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 dialog.dismiss();
             }
         });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-    private void displayLocationInformation(LatLng position) {
-        String locationInfo = String.format("Latitude: %s\nLongitude: %s", position.latitude, position.longitude);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Location Information");
-        builder.setMessage(locationInfo);
-        builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+        builder.setNeutralButton("Jio Button", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
+                // Your custom action for the button
+                Toast.makeText(getApplicationContext(), "Button clicked!", Toast.LENGTH_SHORT).show();
             }
         });
-
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
@@ -428,4 +376,70 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
     }
-}
+    private void showUnableToRetrieveLocationInfoAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Error");
+        builder.setMessage("Unable to retrieve location info");
+
+        builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+    private void loadKmlLayers(boolean showLayer1) {
+        try {
+            if (layer1 != null) {
+                layer1.removeLayerFromMap();
+            }
+            if (layer2 != null) {
+                layer2.removeLayerFromMap();
+            }
+            if (showLayer1) {
+                layer1 = new KmlLayer(mMap, R.raw.eateries2, getApplicationContext());
+                layer1.addLayerToMap();
+            } else {
+                layer2 = new KmlLayer(mMap, R.raw.relax, getApplicationContext());
+                layer2.addLayerToMap();
+            }
+
+            KmlLayer currentLayer = showLayer1 ? layer1 : layer2;
+            currentLayer.setOnFeatureClickListener(new KmlLayer.OnFeatureClickListener() {
+                @Override
+                public void onFeatureClick(Feature feature) {
+                    Geometry geometry = feature.getGeometry();
+                    Log.i("KML", "Feature clicked: " + feature.getId());
+                    if (geometry instanceof Point) {
+                        LatLng position = ((Point) geometry).getGeometryObject();
+                        String name = feature.getProperty("name");
+                        if (name != null) {
+                            searchGooglePlace(name, position);
+                        } else {
+                            showUnableToRetrieveLocationInfoAlert();
+                        }
+                    }
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
+    }
+    private void init2() {
+        Button toggleLayersButton = findViewById(R.id.toggle_layers_button);
+        toggleLayersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isLayer1Visible = !isLayer1Visible;
+                loadKmlLayers(isLayer1Visible);
+            }
+        });
+
+        // Add any other initialization code you may have
+    }
+        }
