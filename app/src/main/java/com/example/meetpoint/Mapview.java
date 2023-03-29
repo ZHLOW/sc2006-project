@@ -99,31 +99,12 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         PlacesClient placesClient = Places.createClient(this);
         setContentView(R.layout.activity_mapview);
 
-        /*AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-
-        autocompleteFragment.setTypeFilter(TypeFilter.ADDRESS);
-
-        autocompleteFragment.setLocationBias(RectangularBounds.newInstance(new LatLng(-33.880490,151.184363),new LatLng(-33.858754,151.229596)));
-        autocompleteFragment.setCountries("IN");
-
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
-
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onError(@NonNull Status status) {}
-
-            @SuppressLint("RestrictedApi")
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                Log.i(TAG, "Place: "+place.getName()+","+place.getId());
-            }
-        }); */
 
         autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
         autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
         autocompleteFragment.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
         autocompleteFragment.setCountries("SG");
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
         //mSearchText = (EditText) findViewById(R.id.input_search);
         mGps = (ImageView) findViewById(R.id.ic_gps);
         mInfo = (ImageView) findViewById(R.id.place_info);
@@ -153,19 +134,6 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     }
 
     private void init(){
-       /* mSearchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
-                if(actionId == EditorInfo.IME_ACTION_SEARCH
-                        || actionId == EditorInfo.IME_ACTION_DONE
-                        || keyEvent.getAction() == KeyEvent.ACTION_DOWN
-                        || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER){
-
-                    geoLocate();
-                }
-                return false;
-            }
-        }); */
 
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -174,7 +142,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @SuppressLint("RestrictedApi")
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                geoLocate();
+                geoLocate(place.getLatLng());
+                Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
             }
         });
         mGps.setOnClickListener(new View.OnClickListener() {
@@ -202,22 +171,12 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         //hideSoftKeyboard();
     }
 
-    private void geoLocate(){
-        String searchString = autocompleteFragment.getText(0).toString(); //mSearchText.getText().toString()
-
-        Geocoder geocoder = new Geocoder(Mapview.this);
-        List<Address> list = new ArrayList<>();
-
-        try{
-            list = geocoder.getFromLocationName(searchString, 1);
+    private void geoLocate(LatLng latLng){
+        if (latLng != null) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
         }
-        catch(IOException e){
-        }
-
-        if(list.size()>0){
-            Address address = list.get(0);
-
-            moveCamera(new LatLng(address.getLatitude(),address.getLongitude()), DEFAULT_ZOOM, address.getAddressLine(0));
+        else{
+            Toast.makeText(Mapview.this, "LatLng returned null", Toast.LENGTH_SHORT).show();
         }
     }
 
