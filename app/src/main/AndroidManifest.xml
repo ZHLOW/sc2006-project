@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.meetpoint">
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- package="com.example.meetpoint"> --> <!-- deprecated -->
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -63,7 +63,7 @@
             android:name=".ChatActivity"
             android:exported="true"
             android:parentActivityName=".ChatFragment"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
