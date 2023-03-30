@@ -25,7 +25,7 @@ public class ProfileFragment extends Fragment {
     private FirebaseAuth authProfile;
     FirebaseUser user;
     ImageView imageView;
-    private TextView textViewUsername, textViewFullName, textViewEmail,  textViewMobile , textViewUnqiueID, textViewLocation;
+    private TextView textViewUsername, textViewFullName, textViewEmail,  textViewMobile , textViewUniqueID, textViewLocation;
 
     Activity context = getActivity();
 
@@ -35,7 +35,7 @@ public class ProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_profile,container,false);
 
-        textViewUnqiueID = view.findViewById(R.id.textView_show_unqiueID);
+        textViewUniqueID = view.findViewById(R.id.textView_show_unqiueID);
         textViewUsername = view.findViewById(R.id.textView_show_username);
         textViewFullName = view.findViewById(R.id.textView_show_full_name);
         textViewEmail = view.findViewById(R.id.textView_show_email);
@@ -54,7 +54,7 @@ public class ProfileFragment extends Fragment {
                 User user = snapshot.getValue(User.class);
                 if (user != null){
 
-                    textViewUnqiueID.setText("ID: " + user.user_id);
+                    textViewUniqueID.setText("ID: " + user.user_id);
                     textViewFullName.setText(user.fullName);
                     textViewUsername.setText("Welcome " + user.username +"!");
                     textViewEmail.setText(user.email);
