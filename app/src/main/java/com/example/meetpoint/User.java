@@ -1,16 +1,18 @@
 package com.example.meetpoint;
 
+import java.util.ArrayList;
+
 public class User {
 
-    public String fullName, username, email, mobileNumber,user_id,location;
-//    public String[] location;
+    public String fullName, username, email, mobileNumber,user_id;
+    public ArrayList<String> location;
     public String profilePhotoUrl;
 
     public User(){
 
     }
 
-    public User(String fullName, String username, String email, String mobileNumber,String user_id, String location){
+    public User(String fullName, String username, String email, String mobileNumber,String user_id, ArrayList<String> location){
 
         this.username = username;
         this.email = email;
@@ -49,11 +51,11 @@ public class User {
         return mobileNumber;
     }
 
-    public String getLocation() {
+    public ArrayList<String> getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(ArrayList<String> location) {
         this.location = location;
     }
 

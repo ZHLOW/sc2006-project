@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -192,7 +193,9 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
 
                         if (task.isSuccessful()) {
                             String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                            User user = new User(fullname, username, email, mobileNumber, id, "null");
+                            // initialise new user location to an empty ArrayList
+                            ArrayList<String> EmptyArrayList = new ArrayList<>();
+                            User user = new User(fullname, username, email, mobileNumber, id, EmptyArrayList);
 
                             FirebaseDatabase.getInstance().getReference("Users")
                                     .child(id)

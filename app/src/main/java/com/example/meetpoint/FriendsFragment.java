@@ -41,33 +41,43 @@ public class FriendsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         FriendFragmentView = inflater.inflate(R.layout.fragment_friends, container, false);
         FriendRef = FirebaseDatabase.getInstance().getReference().child("Users_Requests_And_Friends");
         myFriendsList = (RecyclerView) FriendFragmentView.findViewById(R.id.Friends_List);
         myFriendsList.setLayoutManager(new LinearLayoutManager(getContext()));
         AddFriendButton = FriendFragmentView.findViewById(R.id.AddFriendBtn);
-
         return FriendFragmentView;
     }
 
     @Override
     public void onStart() {
+
         super.onStart();
 
         FirebaseRecyclerOptions<User> options = new FirebaseRecyclerOptions.Builder<User>()
                 .setQuery(FriendRef.child(id).child("Friends"), User.class)
                 .build();
+
         FirebaseRecyclerAdapter<User, FriendsViewHolder> adapter = new FirebaseRecyclerAdapter<User, FriendsViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull FriendsViewHolder holder, int position, @NonNull User model) {
 
                 final String list_user_id = getRef(position).getKey();
-
                 FriendRef.child(id).child("Friends").child(list_user_id).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
+
+                            //////////////////////////////////////////////////////////////////
+                            //////////////////////////////////////////////////////////////////
+                            //                                                              //
+                            //      ZH: ADD PRIVACY BUTTON FOR SHARING LOCATIONS (TBC)      //
+                            //                                                              //
+                            //////////////////////////////////////////////////////////////////
+                            //////////////////////////////////////////////////////////////////
+
                             final String friendUserID = snapshot.child("user_id").getValue().toString();
                             final String friendUserName = snapshot.child("username").getValue().toString();
                             final String friendFullName = snapshot.child("fullName").getValue().toString();
@@ -138,13 +148,11 @@ public class FriendsFragment extends Fragment {
                                 alertDialog.show();
                             }
                         });
-
                     }
 
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
                     }
                 });
 
@@ -161,7 +169,6 @@ public class FriendsFragment extends Fragment {
 
         myFriendsList.setAdapter(adapter);
         adapter.startListening();
-
         AddFriendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,7 +186,7 @@ public class FriendsFragment extends Fragment {
     public static class FriendsViewHolder extends RecyclerView.ViewHolder {
 
         TextView userid, username, fullname, email, mobileNumber;
-        Button SendMsgBtn, RemoveFriendBtn;
+        Button SendMsgBtn, RemoveFriendBtn, EditAddressesBtn;
 
         public FriendsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -191,7 +198,8 @@ public class FriendsFragment extends Fragment {
             mobileNumber = itemView.findViewById(R.id.user_Friend_MobileNumber);
             SendMsgBtn = itemView.findViewById(R.id.Send_Msg_btn);
             RemoveFriendBtn = itemView.findViewById(R.id.Remove_Friend_Btn);
-
+            // ZH: yet to be completed
+            EditAddressesBtn = itemView.findViewById(R.id.Edit_Addresses_Btn);
         }
     }
 }

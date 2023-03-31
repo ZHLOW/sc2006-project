@@ -23,13 +23,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class FriendProfileFragment extends Fragment {
 
     private FirebaseAuth authProfile;
     private String friendProfileID;
     FirebaseUser user;
     ImageView imageView;
-    private TextView textViewUsername, textViewFullName, textViewEmail, textViewMobile, textViewUnqiueID, textViewLocation;
+    private TextView textViewUsername, textViewFullName, textViewEmail, textViewMobile, textViewUniqueID, textViewLocation;
 
     Activity context = getActivity();
 
@@ -40,7 +42,7 @@ public class FriendProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         Bundle bundle = this.getArguments();
         friendProfileID = bundle.getString("friendUserID");
-        textViewUnqiueID = view.findViewById(R.id.textView_show_unqiueID);
+        textViewUniqueID = view.findViewById(R.id.textView_show_unqiueID);
         textViewUsername = view.findViewById(R.id.textView_show_username);
         textViewFullName = view.findViewById(R.id.textView_show_full_name);
         textViewEmail = view.findViewById(R.id.textView_show_email);
@@ -59,16 +61,19 @@ public class FriendProfileFragment extends Fragment {
                 User user = snapshot.getValue(User.class);
                 if (user != null) {
 
-                    textViewUnqiueID.setText("ID: " + user.user_id);
+                    textViewUniqueID.setText("ID: " + user.user_id);
                     textViewFullName.setText(user.fullName);
                     textViewUsername.setText(user.username);
                     textViewEmail.setText(user.email);
                     textViewMobile.setText("+65 " + user.mobileNumber);
-                    if(snapshot.child("location").getValue().equals("null"))
+                    ArrayList<String> locations = (ArrayList<String>) snapshot.child("location").getValue();
+                    if (locations.size() == 0) {
                         textViewLocation.setText("No location shared");
-                    else
-                        textViewLocation.setText(user.location);
-
+                    } else {
+                        for (int i = 0; i < locations.size(); i++) {
+                            textViewLocation.append("Location " + (i + 1) + ": " + locations.get(i) + "\n");
+                        }
+                    }
                 }
             }
 

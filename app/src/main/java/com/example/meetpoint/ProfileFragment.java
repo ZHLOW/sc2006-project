@@ -36,6 +36,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import java.util.ArrayList;
 
 public class ProfileFragment extends Fragment {
 
@@ -84,10 +85,14 @@ public class ProfileFragment extends Fragment {
                     textViewUsername.setText("Welcome " + user.username + "!");
                     textViewEmail.setText(user.email);
                     textViewMobile.setText("+65 " + user.mobileNumber);
-                    if (snapshot.child("location").getValue().equals("null"))
+                    ArrayList<String> locations = (ArrayList<String>) snapshot.child("location").getValue();
+                    if (locations.size() == 0) {
                         textViewLocation.setText("No location shared");
-                    else
-                        textViewLocation.setText(user.location);
+                    } else {
+                        for (int i = 0; i < locations.size(); i++) {
+                            textViewLocation.append("Location " + (i + 1) + ": " + locations.get(i) + "\n");
+                        }
+                    }
                     String profilePhotoUrl = user.getProfilePhotoUrl();
                     if (profilePhotoUrl != null && !profilePhotoUrl.isEmpty()) {
                         Glide.with(requireContext())
