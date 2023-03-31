@@ -76,7 +76,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
             case R.id.nav_logout:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-                builder.setMessage("Are you sure you to Logout?").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                builder.setMessage("Are you sure you want to Logout?").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         FirebaseAuth.getInstance().signOut();

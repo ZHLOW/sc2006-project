@@ -34,7 +34,7 @@ public class FriendRequestsReceivedFragment extends Fragment {
 
     private DatabaseReference FriendRequestRef, FriendRef, UserRef;
     private View FriendRequestsFragmentView;
-    Button SwtichRequestViewBtn;
+    Button SwitchRequestViewBtn;
     private RecyclerView myFriendRequestsList;
 
     String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -50,7 +50,7 @@ public class FriendRequestsReceivedFragment extends Fragment {
         UserRef = FirebaseDatabase.getInstance().getReference("Users");
         myFriendRequestsList = (RecyclerView) FriendRequestsFragmentView.findViewById(R.id.Friend_Requests_Received_List);
         myFriendRequestsList.setLayoutManager(new LinearLayoutManager(getContext()));
-        SwtichRequestViewBtn = FriendRequestsFragmentView.findViewById(R.id.SwtichRequestSentViewBtn);
+        SwitchRequestViewBtn = FriendRequestsFragmentView.findViewById(R.id.SwtichRequestSentViewBtn);
 
         return FriendRequestsFragmentView;
     }
@@ -206,10 +206,10 @@ public class FriendRequestsReceivedFragment extends Fragment {
         myFriendRequestsList.setAdapter(adapter);
         adapter.startListening();
 
-        SwtichRequestViewBtn.setOnClickListener(new View.OnClickListener() {
+        SwitchRequestViewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SwtichRequestViewBtn.setVisibility(View.GONE);
+                SwitchRequestViewBtn.setVisibility(View.GONE);
                 Fragment sentRequestsFrag = new FriendRequestsSentFragment();
                 FragmentTransaction fm = getActivity().getSupportFragmentManager().beginTransaction();
                 fm.replace(R.id.Friend_Requests_Received_Container,sentRequestsFrag).commit();
