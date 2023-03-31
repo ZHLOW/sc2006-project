@@ -194,8 +194,10 @@ public class SignUp extends AppCompatActivity implements View.OnClickListener {
                         if (task.isSuccessful()) {
                             String id = FirebaseAuth.getInstance().getCurrentUser().getUid();
                             // initialise new user location to an empty ArrayList
-                            ArrayList<String> EmptyArrayList = new ArrayList<>();
-                            User user = new User(fullname, username, email, mobileNumber, id, EmptyArrayList);
+                            ArrayList<String> emptyArrayList = new ArrayList<>();
+                            emptyArrayList.add("placeholder");
+
+                            User user = new User(fullname, username, email, mobileNumber, id, emptyArrayList);
 
                             FirebaseDatabase.getInstance().getReference("Users")
                                     .child(id)

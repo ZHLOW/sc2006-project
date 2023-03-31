@@ -108,7 +108,7 @@ public class FriendRequestsReceivedFragment extends Fragment {
                                                         friendCreate.put("user_id", user.user_id);
                                                         friendCreate.put("email", user.email);
                                                         friendCreate.put("mobileNumber", user.mobileNumber);
-                                                        friendCreate.put("location", user.location);
+                                                        friendCreate.put("locations", user.locations);
                                                         otherUserRef.updateChildren(friendCreate);
 
                                                         FriendRequestRef.child(id).child("Requests").child("Received").child(list_user_id)
@@ -146,7 +146,7 @@ public class FriendRequestsReceivedFragment extends Fragment {
                                             friendCreate.put("user_id", user.user_id);
                                             friendCreate.put("email", user.email);
                                             friendCreate.put("mobileNumber", user.mobileNumber);
-                                            friendCreate.put("location", user.location);
+                                            friendCreate.put("locations", user.locations);
                                             currentUserRef.updateChildren(friendCreate);
                                         } else
                                             Toast.makeText(getContext(), "Something went wrong!", Toast.LENGTH_LONG).show();

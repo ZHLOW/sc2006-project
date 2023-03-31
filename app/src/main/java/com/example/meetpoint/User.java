@@ -5,21 +5,21 @@ import java.util.ArrayList;
 public class User {
 
     public String fullName, username, email, mobileNumber,user_id;
-    public ArrayList<String> location;
+    public ArrayList<String> locations;
     public String profilePhotoUrl;
 
     public User(){
 
     }
 
-    public User(String fullName, String username, String email, String mobileNumber,String user_id, ArrayList<String> location){
+    public User(String fullName, String username, String email, String mobileNumber,String user_id, ArrayList<String> locations){
 
         this.username = username;
         this.email = email;
         this.fullName = fullName;
         this.mobileNumber = mobileNumber;
         this.user_id = user_id;
-        this.location = location;
+        this.locations = locations;
 
     }
     public String getProfilePhotoUrl() {
@@ -51,17 +51,15 @@ public class User {
         return mobileNumber;
     }
 
-    public ArrayList<String> getLocation() {
-        return location;
+    public ArrayList<String> getLocations() {
+        return locations;
     }
 
-    public void setLocation(ArrayList<String> location) {
-        this.location = location;
+    public void setLocations(ArrayList<String> locations) {
+        this.locations = locations;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
 
 

@@ -85,14 +85,15 @@ public class ProfileFragment extends Fragment {
                     textViewUsername.setText("Welcome " + user.username + "!");
                     textViewEmail.setText(user.email);
                     textViewMobile.setText("+65 " + user.mobileNumber);
-                    ArrayList<String> locations = (ArrayList<String>) snapshot.child("location").getValue();
-                    if (locations.size() == 0) {
+                    ArrayList<String> locationsSnapshot = (ArrayList<String>) snapshot.child("locations").getValue();
+                    if (locationsSnapshot.size() == 1) {
                         textViewLocation.setText("No location shared");
                     } else {
-                        for (int i = 0; i < locations.size(); i++) {
-                            textViewLocation.append("Location " + (i + 1) + ": " + locations.get(i) + "\n");
+                        for (int i = 1; i < locationsSnapshot.size(); i++) {
+                            textViewLocation.append("Location " + i + ": " + locationsSnapshot.get(i) + "\n");
                         }
                     }
+
                     String profilePhotoUrl = user.getProfilePhotoUrl();
                     if (profilePhotoUrl != null && !profilePhotoUrl.isEmpty()) {
                         Glide.with(requireContext())

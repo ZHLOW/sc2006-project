@@ -186,7 +186,7 @@ public class FriendsFragment extends Fragment {
     public static class FriendsViewHolder extends RecyclerView.ViewHolder {
 
         TextView userid, username, fullname, email, mobileNumber;
-        Button SendMsgBtn, RemoveFriendBtn, EditAddressesBtn;
+        Button SendMsgBtn, RemoveFriendBtn;
 
         public FriendsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -198,8 +198,6 @@ public class FriendsFragment extends Fragment {
             mobileNumber = itemView.findViewById(R.id.user_Friend_MobileNumber);
             SendMsgBtn = itemView.findViewById(R.id.Send_Msg_btn);
             RemoveFriendBtn = itemView.findViewById(R.id.Remove_Friend_Btn);
-            // ZH: yet to be completed
-            EditAddressesBtn = itemView.findViewById(R.id.Edit_Addresses_Btn);
         }
     }
 }
