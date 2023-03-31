@@ -54,9 +54,9 @@
         android:id="@+id/place_info"
         android:src="@drawable/ic_info" />
 
-    <Button
+    <ImageView
         android:id="@+id/toggle_layers_button"
-        android:layout_width="200dp"
+        android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
         android:layout_marginStart="10dp"
@@ -64,7 +64,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
-        android:text="Park/Restaurant" />
+        android:src="@drawable/respark" />
 
 
 </RelativeLayout>

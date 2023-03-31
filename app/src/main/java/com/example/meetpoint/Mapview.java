@@ -390,7 +390,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
     private void init2() {
-        Button toggleLayersButton = findViewById(R.id.toggle_layers_button);
+        ImageView toggleLayersButton = findViewById(R.id.toggle_layers_button);
         toggleLayersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -398,7 +398,5 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 loadKmlLayers(isLayer1Visible);
             }
         });
-
-        // Add any other initialization code you may have
     }
         }

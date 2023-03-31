@@ -16,6 +16,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -76,17 +78,25 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
-                if (user != null){
-
+                if (user != null) {
                     textViewUniqueID.setText("ID: " + user.user_id);
                     textViewFullName.setText(user.fullName);
-                    textViewUsername.setText("Welcome " + user.username +"!");
+                    textViewUsername.setText("Welcome " + user.username + "!");
                     textViewEmail.setText(user.email);
                     textViewMobile.setText("+65 " + user.mobileNumber);
-                    if(snapshot.child("location").getValue().equals("null"))
+                    if (snapshot.child("location").getValue().equals("null"))
                         textViewLocation.setText("No location shared");
                     else
                         textViewLocation.setText(user.location);
+                    String profilePhotoUrl = user.getProfilePhotoUrl();
+                    if (profilePhotoUrl != null && !profilePhotoUrl.isEmpty()) {
+                        Glide.with(requireContext())
+                                .load(profilePhotoUrl)
+                                .placeholder(R.drawable.no_profile_pic)
+                                .into(imageView);
+                    } else {
+                        imageView.setImageResource(R.drawable.no_profile_pic);
+                    }
                 }
             }
             @Override

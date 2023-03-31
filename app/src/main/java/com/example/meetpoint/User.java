@@ -4,6 +4,7 @@ public class User {
 
     public String fullName, username, email, mobileNumber,user_id,location;
 //    public String[] location;
+    public String profilePhotoUrl;
 
     public User(){
 
@@ -19,6 +20,14 @@ public class User {
         this.location = location;
 
     }
+    public String getProfilePhotoUrl() {
+        return profilePhotoUrl;
+    }
+
+    public void setProfilePhotoUrl(String profilePhotoUrl) {
+        this.profilePhotoUrl = profilePhotoUrl;
+    }
+
 
     public String getFullName() {
         return fullName;

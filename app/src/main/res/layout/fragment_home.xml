@@ -1,30 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
+    <Button
+        android:id="@+id/mapButton"
+        android:layout_width="253dp"
+        android:layout_height="55dp"
+        android:layout_below="@+id/personright2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="130dp"
+        android:onClick="goToMapview"
+        android:text="MeetPoint" />
     <TextView
         android:id="@+id/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Home Fragment"
+        android:text="Use MeetPoint Below!"
         android:textSize="30sp" />
 
-    <Button
-        android:id="@+id/mapButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/Title"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="151dp"
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="300dp"
+        android:layout_height="82dp"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="60dp"
+        android:fontFamily="@font/indussanlight"
+        android:gravity="center"
+        android:text="MeetPoint"
+        android:textColor="#FF007569"
+        android:textSize="80dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/personright"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:drawableStart="@drawable/ic_personright"
         android:layout_marginTop="113dp"
-        android:layout_marginEnd="172dp"
-        android:layout_marginBottom="184dp"
-        android:onClick="goToMapview"
-        android:text="Mapview" />
+        android:layout_marginStart="111dp"/>
+
+    <TextView
+        android:id="@+id/personright2"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:drawableStart="@drawable/ic_personright"
+        android:rotationX="-8"
+        android:rotationY="-178"
+        android:layout_marginTop="113dp"
+        android:layout_marginStart="151dp" />
+    <TextView
+        android:id="@+id/ic_line"
+        android:layout_width="135dp"
+        android:layout_height="130dp"
+        android:drawableStart="@drawable/ic_line"
+        android:rotation="17"
+        android:layout_marginTop="153dp"
+        android:layout_marginStart="151dp" />
+
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:drawableStart="@drawable/ic_location"
+        android:layout_marginTop="113dp"
+        android:layout_marginStart="181dp"/>
+    <TextView
+        android:id="@+id/ic_line3"
+        android:layout_width="135dp"
+        android:layout_height="130dp"
+        android:drawableStart="@drawable/ic_line"
+        android:rotation="17"
+        android:rotationY="-180"
+        android:layout_marginTop="153dp"
+        android:layout_marginStart="126dp" />
+
 
 </RelativeLayout>
