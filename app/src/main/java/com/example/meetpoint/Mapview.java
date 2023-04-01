@@ -122,29 +122,34 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         autocompleteFragment1.setCountries("SG");
         autocompleteFragment1.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
+
         autocompleteFragment2 = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment2);
         autocompleteFragment2.setTypeFilter(TypeFilter.ESTABLISHMENT);
         autocompleteFragment2.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
         autocompleteFragment2.setCountries("SG");
         autocompleteFragment2.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        autocompleteFragment2.setHint("Search 2nd Location");
 
         autocompleteFragment3 = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment3);
         autocompleteFragment3.setTypeFilter(TypeFilter.ESTABLISHMENT);
         autocompleteFragment3.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
         autocompleteFragment3.setCountries("SG");
         autocompleteFragment3.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        autocompleteFragment3.setHint("Search 3rd Location");
 
         autocompleteFragment4 = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment4);
         autocompleteFragment4.setTypeFilter(TypeFilter.ESTABLISHMENT);
         autocompleteFragment4.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
         autocompleteFragment4.setCountries("SG");
         autocompleteFragment4.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        autocompleteFragment4.setHint("Search 4th Location");
 
         autocompleteFragment5 = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment5);
         autocompleteFragment5.setTypeFilter(TypeFilter.ESTABLISHMENT);
         autocompleteFragment5.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
         autocompleteFragment5.setCountries("SG");
         autocompleteFragment5.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        autocompleteFragment5.setHint("Search 5th Location");
 
         mGps = (ImageView) findViewById(R.id.ic_gps);
         addAutocompleteButton = findViewById(R.id.add_autocomplete_button);
@@ -196,7 +201,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 locations[0]=place.getLatLng();
                 autocompleteFragment1.setHint(place.getName());
                 geoLocate(place.getLatLng());
-                Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -210,7 +215,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 locations[1]=place.getLatLng();
                 autocompleteFragment2.setHint(place.getName());
                 geoLocate(place.getLatLng());
-                Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -227,7 +232,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 locations[2]=place.getLatLng();
                 autocompleteFragment3.setHint(place.getName());
                 geoLocate(place.getLatLng());
-                Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -243,7 +248,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 locations[3]=place.getLatLng();
                 autocompleteFragment4.setHint(place.getName());
                 geoLocate(place.getLatLng());
-                Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -259,7 +264,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 locations[4]=place.getLatLng();
                 autocompleteFragment5.setHint(place.getName());
                 geoLocate(place.getLatLng());
-                Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -275,7 +280,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             public void onClick(View view) {
                 showBar();
-                Toast.makeText(Mapview.this, "COUNT: "+COUNT, Toast.LENGTH_SHORT).show();
+
             }
         });
 
