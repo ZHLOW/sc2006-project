@@ -37,6 +37,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+<<<<<<< Updated upstream
+=======
+import com.google.android.gms.maps.model.Circle;
+>>>>>>> Stashed changes
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -95,8 +99,14 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private KmlLayer layer2;
     private boolean isLayer1Visible = true;
     private float radius;
+<<<<<<< Updated upstream
     private LatLng resultLatLng;
     private Slider radiusSlider;
+=======
+    private Slider radiusSlider;
+    private LatLng resultLatLng;
+    private Circle mapCircle;
+>>>>>>> Stashed changes
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,7 +193,11 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private void geoLocate(LatLng latLng){
         if (latLng != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+<<<<<<< Updated upstream
             mMap.addCircle(new CircleOptions()
+=======
+            mapCircle = mMap.addCircle(new CircleOptions()
+>>>>>>> Stashed changes
                     .center(latLng)
                     .fillColor(Color.rgb(194, 217, 252))
                     .strokeColor(Color.rgb(194, 217, 252))
@@ -404,6 +418,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
     private void init2() {
+<<<<<<< Updated upstream
         Button toggleLayersButton = findViewById(R.id.toggle_layers_button);
         radiusSlider = findViewById(R.id.radiusSlider);
         radius = 50;
@@ -421,6 +436,36 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
 
+=======
+        ImageView toggleLayersButton = findViewById(R.id.toggle_layers_button);
+        Slider radiusSlider = findViewById(R.id.radiusSlider);
+        CircleOptions circleOptions = new CircleOptions();
+        circleOptions.fillColor(Color.rgb(194, 217, 252));
+        circleOptions.strokeColor(Color.rgb(194, 217, 252));
+        circleOptions.radius(100);
+        radiusSlider.addOnChangeListener(new Slider.OnChangeListener() {
+            @Override
+            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                if(resultLatLng == null){
+                    radius = value;
+                }
+                else{
+                    if (mapCircle != null) mapCircle.remove();
+                    //circleOptions.radius(value);
+                    mapCircle = mMap.addCircle(new CircleOptions()
+                            .center(resultLatLng)
+                            .fillColor(Color.rgb(194, 217, 252))
+                            .strokeColor(Color.rgb(194, 217, 252))
+                            .radius(value)
+                            );
+                }
+
+
+
+
+            }
+        });
+>>>>>>> Stashed changes
         toggleLayersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -432,10 +477,13 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         // Add any other initialization code you may have
     }
 
+<<<<<<< Updated upstream
     private void addFriendButton(){
 
     }
 
+=======
+>>>>>>> Stashed changes
     private LatLng calMeetPoint(LatLng[] positions){
         double latAvg = 0;
         double longAvg = 0;
@@ -444,8 +492,13 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         //only 1 set of coordinates
         if(positions.length == 1) return result;
 
+<<<<<<< Updated upstream
         //more than 1 set of coordinates
         //take the average
+=======
+            //more than 1 set of coordinates
+            //take the average
+>>>>>>> Stashed changes
         else{
             for(int i = 0; i < positions.length; i--){
                 //only calculating sum for now
@@ -462,6 +515,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         }
         return result;
     }
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
         }
