@@ -11,6 +11,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -36,6 +37,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -51,6 +53,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.material.slider.Slider;
 import com.google.maps.android.data.kml.KmlLayer;
 import com.google.maps.android.data.Feature;
 import com.google.maps.android.data.Geometry;
@@ -91,6 +94,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private KmlLayer layer1;
     private KmlLayer layer2;
     private boolean isLayer1Visible = true;
+    private float radius;
+    private LatLng resultLatLng;
+    private Slider radiusSlider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +114,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         //mSearchText = (EditText) findViewById(R.id.input_search);
         mGps = (ImageView) findViewById(R.id.ic_gps);
         mInfo = (ImageView) findViewById(R.id.place_info);
+        Slider radiusSlider = findViewById(R.id.radiusSlider);
 
         getLocationPermission();
 
@@ -142,10 +149,12 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @SuppressLint("RestrictedApi")
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                geoLocate(place.getLatLng());
+                resultLatLng = place.getLatLng();
+                geoLocate(resultLatLng);
                 Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
             }
         });
+
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -174,6 +183,11 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private void geoLocate(LatLng latLng){
         if (latLng != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+            mMap.addCircle(new CircleOptions()
+                    .center(latLng)
+                    .fillColor(Color.rgb(194, 217, 252))
+                    .strokeColor(Color.rgb(194, 217, 252))
+                    .radius(100));
         }
         else{
             Toast.makeText(Mapview.this, "LatLng returned null", Toast.LENGTH_SHORT).show();
@@ -391,6 +405,22 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     }
     private void init2() {
         Button toggleLayersButton = findViewById(R.id.toggle_layers_button);
+        radiusSlider = findViewById(R.id.radiusSlider);
+        radius = 50;
+
+        radiusSlider.addOnChangeListener(new Slider.OnChangeListener() {
+            @Override
+            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                radius = value;
+                mMap.addCircle(new CircleOptions()
+                        .center(resultLatLng)
+                        .fillColor(Color.rgb(194, 217, 252))
+                        .strokeColor(Color.rgb(194, 217, 252))
+                        .radius(radius));
+
+            }
+        });
+
         toggleLayersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -401,4 +431,37 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
         // Add any other initialization code you may have
     }
+
+    private void addFriendButton(){
+
+    }
+
+    private LatLng calMeetPoint(LatLng[] positions){
+        double latAvg = 0;
+        double longAvg = 0;
+        LatLng result = positions[0];
+        if(positions.length < 1) return null;
+        //only 1 set of coordinates
+        if(positions.length == 1) return result;
+
+        //more than 1 set of coordinates
+        //take the average
+        else{
+            for(int i = 0; i < positions.length; i--){
+                //only calculating sum for now
+                latAvg += positions[i].latitude;
+                longAvg += positions[i].longitude;
+            }
+            //calculate averages here
+            latAvg = latAvg/positions.length;
+            longAvg = longAvg/ positions.length;
+
+            //combine to form a latlng
+
+            result = new LatLng(latAvg,longAvg);
+        }
+        return result;
+    }
+
+
         }

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <fragment
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context = ".Mapview">
+        tools:context=".Mapview">
 
     </fragment>
-    
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -24,11 +24,11 @@
         android:background="@drawable/white_border"
         android:id="@+id/relLayout1" >
 
-        <fragment android:id="@+id/autocomplete_fragment"
+        <fragment
+            android:id="@+id/autocomplete_fragment"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
-
+            android:layout_height="wrap_content" />
 
 
     </RelativeLayout>
@@ -53,6 +53,22 @@
         android:scaleType="centerCrop"
         android:id="@+id/place_info"
         android:src="@drawable/ic_info" />
+
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/radiusSlider"
+        android:valueFrom="100"
+        android:valueTo="3000"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="650dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        />
+
 
     <Button
         android:id="@+id/toggle_layers_button"
