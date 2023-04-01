@@ -88,11 +88,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
     //widgets
     private ImageView mGps;
-    private AutocompleteSupportFragment autocompleteFragment1;
-    private AutocompleteSupportFragment autocompleteFragment2;
-    private AutocompleteSupportFragment autocompleteFragment3;
-    private AutocompleteSupportFragment autocompleteFragment4;
-    private AutocompleteSupportFragment autocompleteFragment5;
+    private AutocompleteSupportFragment autocompleteFragment1, autocompleteFragment2, autocompleteFragment3, autocompleteFragment4, autocompleteFragment5;
     private ImageView addAutocompleteButton;
 
     //vars
@@ -110,6 +106,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private boolean isLayer1Visible = true;
 
     private int COUNT = 5;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,9 +146,13 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         autocompleteFragment5.setCountries("SG");
         autocompleteFragment5.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
+        hideBar();
+        hideBar();
+        hideBar();
+        hideBar();
+
         mGps = (ImageView) findViewById(R.id.ic_gps);
         addAutocompleteButton = findViewById(R.id.add_autocomplete_button);
-
 
         getLocationPermission();
 
@@ -195,10 +197,6 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
 
-        ViewGroup searchView2 = (ViewGroup) autocompleteFragment2.getView();
-        if (searchView2 != null) {
-            searchView2.setBackgroundColor(Color.WHITE);
-        }
         autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onError(@NonNull Status status) {}
@@ -211,10 +209,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
 
-        ViewGroup searchView3 = (ViewGroup) autocompleteFragment3.getView();
-        if (searchView3 != null) {
-            searchView3.setBackgroundColor(Color.WHITE);
-        }
+
+
+
         autocompleteFragment3.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onError(@NonNull Status status) {}
@@ -227,10 +224,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
 
-        ViewGroup searchView4 = (ViewGroup) autocompleteFragment4.getView();
-        if (searchView4 != null) {
-            searchView4.setBackgroundColor(Color.WHITE);
-        }
+
+
         autocompleteFragment4.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onError(@NonNull Status status) {}
@@ -243,10 +238,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
 
-        ViewGroup searchView5 = (ViewGroup) autocompleteFragment5.getView();
-        if (searchView5 != null) {
-            searchView5.setBackgroundColor(Color.WHITE);
-        }
+
+
         autocompleteFragment5.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onError(@NonNull Status status) {}
@@ -259,10 +252,11 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
 
+
+        /*hideBar();
         hideBar();
         hideBar();
-        hideBar();
-        hideBar();
+        hideBar(); */
 
 
         mGps.setOnClickListener(new View.OnClickListener() {
@@ -329,14 +323,17 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             case 2:
                 View autocompleteView2 = autocompleteFragment2.getView();
                 if (autocompleteView2 != null) {
+                    autocompleteView2.setBackgroundColor(Color.WHITE);
                     autocompleteView2.setVisibility(View.VISIBLE);
                     autocompleteView2.setEnabled(true);
                 }
+
                 break;
 
             case 3:
                 View autocompleteView3 = autocompleteFragment3.getView();
                 if (autocompleteView3 != null) {
+                    autocompleteView3.setBackgroundColor(Color.WHITE);
                     autocompleteView3.setVisibility(View.VISIBLE);
                     autocompleteView3.setEnabled(true);
                 }
@@ -345,6 +342,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             case 4:
                 View autocompleteView4 = autocompleteFragment4.getView();
                 if (autocompleteView4 != null) {
+                    autocompleteView4.setBackgroundColor(Color.WHITE);
                     autocompleteView4.setVisibility(View.VISIBLE);
                     autocompleteView4.setEnabled(true);
                 }
@@ -353,6 +351,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             case 5:
                 View autocompleteView5 = autocompleteFragment5.getView();
                 if (autocompleteView5 != null) {
+                    autocompleteView5.setBackgroundColor(Color.WHITE);
                     autocompleteView5.setVisibility(View.VISIBLE);
                     autocompleteView5.setEnabled(true);
                 }
