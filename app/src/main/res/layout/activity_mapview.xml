@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/parent_view" >
 
     <fragment
         xmlns:tools="http://schemas.android.com/tools"
@@ -14,37 +15,40 @@
 
     </fragment>
     
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:elevation="10dp"
-        android:background="@drawable/white_border"
-        android:id="@+id/relLayout1" >
 
-        <fragment android:id="@+id/autocomplete_fragment"
+
+    <fragment android:id="@+id/autocomplete_fragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
 
 
 
-    </RelativeLayout>
+
 
     <ImageView
         android:id="@+id/ic_gps"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_below="@+id/relLayout1"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_gps" />
-    
+        android:layout_marginBottom="10dp"
 
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+
+
+        android:src="@drawable/ic_gps" />
+
+    <ImageView
+        android:id="@+id/add_autocomplete_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="650dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:src = "@drawable/ic_add_foreground"/>
 
     <ImageView
         android:id="@+id/toggle_layers_button"
