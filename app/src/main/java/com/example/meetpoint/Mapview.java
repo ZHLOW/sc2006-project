@@ -305,6 +305,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
                     removeAutocompleteButton.setVisibility(View.GONE);
                     removeAutocompleteButton.setEnabled(false);
+
+                    locations[1] = null;
+                    autocompleteFragment2.setText("");
+                    autocompleteFragment2.setHint("Search 2nd Location");
                 }
                 break;
 
@@ -313,6 +317,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 if (autocompleteView3 != null) {
                     autocompleteView3.setVisibility(View.GONE);
                     autocompleteView3.setEnabled(false);
+
+                    locations[2] = null;
+                    autocompleteFragment3.setText("");
+                    autocompleteFragment3.setHint("Search 3rd Location");
                 }
                 break;
 
@@ -321,6 +329,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 if (autocompleteView4 != null) {
                     autocompleteView4.setVisibility(View.GONE);
                     autocompleteView4.setEnabled(false);
+
+                    locations[3] = null;
+                    autocompleteFragment4.setText("");
+                    autocompleteFragment4.setHint("Search 4th Location");
                 }
                 break;
 
@@ -332,6 +344,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
                     addAutocompleteButton.setVisibility(View.VISIBLE);
                     addAutocompleteButton.setEnabled(true);
+
+                    locations[4] = null;
+                    autocompleteFragment5.setText("");
+                    autocompleteFragment5.setHint("Search 5th Location");
                 }
                 break;
         }
