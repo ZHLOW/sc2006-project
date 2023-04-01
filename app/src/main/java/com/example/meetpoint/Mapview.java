@@ -75,7 +75,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
     //widgets
     private EditText mSearchText;
-    private ImageView mGps, mInfo;
+    private ImageView mGps;
     private AutocompleteSupportFragment autocompleteFragment;
 
     //vars
@@ -107,7 +107,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
         //mSearchText = (EditText) findViewById(R.id.input_search);
         mGps = (ImageView) findViewById(R.id.ic_gps);
-        mInfo = (ImageView) findViewById(R.id.place_info);
+
 
         getLocationPermission();
 
@@ -153,20 +153,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
 
-        mInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try{
-                    if(mMarker.isInfoWindowShown()){
-                        mMarker.hideInfoWindow();
-                    }
-                    else{
-                        mMarker.showInfoWindow();
-                    }
-                }
-                catch(NullPointerException e){}
-            }
-        });
+
 
         //hideSoftKeyboard();
     }
