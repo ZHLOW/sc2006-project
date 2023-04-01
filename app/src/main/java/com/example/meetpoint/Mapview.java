@@ -272,7 +272,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getDeviceLocation();
+                findMP(locations);
+
             }
         });
 
@@ -665,4 +666,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
     }
-        }
+
+    public void findMP(LatLng[] array){
+
+    }
+}
