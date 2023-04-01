@@ -25,9 +25,8 @@
 
     <TextView
         android:id="@+id/title"
-        android:layout_width="300dp"
-        android:layout_height="82dp"
-        android:layout_marginStart="70dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:fontFamily="@font/indussanlight"
         android:gravity="center"
@@ -35,6 +34,7 @@
         android:textColor="#FF007569"
         android:textSize="80dp"
         android:textStyle="bold" />
+
 
     <TextView
         android:id="@+id/personright"
