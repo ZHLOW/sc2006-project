@@ -80,6 +80,12 @@
         android:layout_marginBottom="10dp"
         android:src = "@drawable/ic_add_foreground"/>
 
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="50dp">
+
+    </Button>
+
     <ImageView
         android:id="@+id/remove_autocomplete_button"
         android:layout_width="50dp"
@@ -91,13 +97,34 @@
         android:layout_marginBottom="10dp"
         android:src="@drawable/ic_remove_foreground" />
 
+    <com.google.android.material.slider.Slider
+        android:id="@+id/radiusSlider"
+        android:layout_width="150dp"
+        android:layout_height="20dp"
+        android:valueFrom="500"
+        android:valueTo="2000"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:layout_width="150dp"
+        android:layout_height="20dp"
+        android:text="Change Radius"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:textSize="15sp"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        />
+
     <ImageView
         android:id="@+id/toggle_layers_button"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="650dp"
+        android:layout_marginTop="620dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"

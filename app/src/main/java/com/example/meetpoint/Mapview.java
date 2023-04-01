@@ -42,6 +42,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -60,6 +62,7 @@ import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRe
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.material.slider.Slider;
 import com.google.maps.android.data.kml.KmlLayer;
 import com.google.maps.android.data.Feature;
 import com.google.maps.android.data.Geometry;
@@ -106,6 +109,11 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private boolean isLayer1Visible = true;
     private int COUNT = 5;
     LatLng[] locations = new LatLng[5];
+
+    private float radius;
+    private Circle mapCircle;
+    private CircleOptions circleOptions;
+    private LatLng resultLatLng = new LatLng(0,0);
 
 
 
@@ -272,7 +280,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                findMP(locations);
+                resultLatLng = findMP(locations);
+                geoLocate(resultLatLng);
 
             }
         });
@@ -408,6 +417,11 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private void geoLocate(LatLng latLng){
         if (latLng != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
+            mapCircle = mMap.addCircle(new CircleOptions()
+                    .center(latLng)
+                    .fillColor(Color.rgb(194, 217, 252))
+                    .strokeColor(Color.rgb(194, 217, 252))
+                    .radius(500));
         }
         else{
             Toast.makeText(Mapview.this, "LatLng returned null", Toast.LENGTH_SHORT).show();
@@ -658,6 +672,26 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     }
     private void init2() {
         ImageView toggleLayersButton = findViewById(R.id.toggle_layers_button);
+        Slider radiusSlider = findViewById(R.id.radiusSlider);
+        radius = 500;
+        radiusSlider.addOnChangeListener(new Slider.OnChangeListener() {
+            @Override
+            public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
+                if (mapCircle == null){
+                    radius = value;
+                }
+                else{
+                    if(mapCircle != null) mapCircle.remove();
+                    radius = value;
+                    mapCircle = mMap.addCircle(new CircleOptions()
+                            .center(resultLatLng)
+                            .fillColor(Color.rgb(194, 217, 252))
+                            .strokeColor(Color.rgb(194, 217, 252))
+                            .radius(radius));
+                }
+
+            }
+        });
         toggleLayersButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -667,7 +701,41 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         });
     }
 
-    public void findMP(LatLng[] array){
+    private LatLng findMP(LatLng[] positions){
+        int i = 0;
+        double latAvg = 0;
+        double longAvg = 0;
+        LatLng result = positions[0];
+        if(positions[0] == null) return null;
+        //only 1 set of coordinates
+        if(positions[1] == null) return result;
 
+        //more than 1 set of coordinates
+        //take the average
+
+        else{
+            while (positions[i] != null){
+                //only calculating sum for now
+                latAvg += positions[i].latitude;
+                longAvg += positions[i].longitude;
+                i++;
+            }
+            //calculate averages here
+            latAvg = latAvg/(i);
+            longAvg = longAvg/ (i);
+
+            //combine to form a latlng
+
+            result = new LatLng(latAvg,longAvg);
+        }
+        Toast.makeText(Mapview.this, "found the result", Toast.LENGTH_SHORT).show();
+        Log.d("MyApp",result.toString());
+        Log.d("MyApp",positions[0].toString());
+        Log.d("MyApp",positions[1].toString());
+        //Log.d("MyApp",positions[2].toString());
+        //Log.d("MyApp",positions[3].toString());
+        //Log.d("MyApp",positions[4].toString());
+
+        return result;
     }
 }
