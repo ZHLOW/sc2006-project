@@ -151,7 +151,7 @@
             <ScrollView
                 android:id="@+id/scrollView"
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
+                android:layout_height="match_parent"
                 android:layout_below="@id/divider_mobile"
                 android:layout_alignStart="@id/ic_location"
                 android:fillViewport="true">
@@ -166,18 +166,6 @@
                     android:textSize="18sp" />
             </ScrollView>
 
-
-            <Button
-                android:id="@+id/Edit_Addresses_Btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/scrollView"
-                android:layout_marginTop="0dp"
-                android:backgroundTint="@color/quantum_bluegrey400"
-                android:text="Edit Addresses"
-                android:textAllCaps="false"
-                android:textSize="18sp" />
-
         </RelativeLayout>
 
         <ProgressBar
@@ -190,19 +178,5 @@
             app:layout_constraintTop_toBottomOf="@+id/ic_location" />
 
     </LinearLayout>
-
-<!--    <Button-->
-<!--        android:id="@+id/editProfileBtn"-->
-<!--        android:layout_width="200dp"-->
-<!--        android:layout_height="50dp"-->
-<!--        android:layout_marginTop="88dp"-->
-<!--        android:text="Edit profile"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:background="#FF007569"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.498"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />-->
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

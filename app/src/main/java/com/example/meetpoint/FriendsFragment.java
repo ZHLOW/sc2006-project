@@ -70,14 +70,6 @@ public class FriendsFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.exists()) {
 
-                            //////////////////////////////////////////////////////////////////
-                            //////////////////////////////////////////////////////////////////
-                            //                                                              //
-                            //      ZH: ADD PRIVACY BUTTON FOR SHARING LOCATIONS (TBC)      //
-                            //                                                              //
-                            //////////////////////////////////////////////////////////////////
-                            //////////////////////////////////////////////////////////////////
-
                             final String friendUserID = snapshot.child("user_id").getValue().toString();
                             final String friendUserName = snapshot.child("username").getValue().toString();
                             final String friendFullName = snapshot.child("fullName").getValue().toString();
