@@ -11,6 +11,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -19,6 +20,7 @@ import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -48,9 +50,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.OpeningHours;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
@@ -75,6 +80,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.io.InputStream;
+
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -414,7 +420,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     }
     private void showGoogleInformation(String placeId, LatLng position) {
         PlacesClient placesClient = Places.createClient(this);
-        List<Field> placeFields = Arrays.asList(Field.ID, Field.NAME, Field.ADDRESS, Field.PHONE_NUMBER, Field.WEBSITE_URI, Field.RATING, Field.USER_RATINGS_TOTAL);
+        List<Field> placeFields = Arrays.asList(Field.ID, Field.NAME, Field.ADDRESS, Field.PHONE_NUMBER, Field.WEBSITE_URI, Field.RATING, Field.USER_RATINGS_TOTAL, Field.OPENING_HOURS, Field.PHOTO_METADATAS);
         FetchPlaceRequest request = FetchPlaceRequest.newInstance(placeId, placeFields);
         placesClient.fetchPlace(request).addOnSuccessListener((response) -> {
             Place place = response.getPlace();
@@ -425,17 +431,50 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     }
     private void displayPlaceInformation(Place place) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(place.getName());
-        String info = String.format(
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.place_information_dialog, null);
+        builder.setView(dialogView);
+        TextView title = dialogView.findViewById(R.id.place_title);
+        TextView info = dialogView.findViewById(R.id.place_info);
+        ImageView placeImage = dialogView.findViewById(R.id.place_image);
+        title.setText(place.getName());
+        StringBuilder infoText = new StringBuilder(String.format(
                 "Address: %s\nPhone: %s\nWebsite: %s\nRating: %.1f (based on %d user ratings)",
                 place.getAddress(),
                 place.getPhoneNumber(),
                 place.getWebsiteUri() != null ? place.getWebsiteUri().toString() : "N/A",
                 place.getRating(),
                 place.getUserRatingsTotal()
-        );
+        ));
 
-        builder.setMessage(info);
+        OpeningHours openingHours = place.getOpeningHours();
+        if (openingHours != null) {
+            infoText.append("\n\nOperating Hours:\n");
+            List<String> weekdays = openingHours.getWeekdayText();
+            for (String day : weekdays) {
+                infoText.append(day).append("\n");
+            }
+        }
+
+        info.setText(infoText.toString());
+
+        List<PhotoMetadata> photoMetadataList = place.getPhotoMetadatas();
+        if (photoMetadataList != null && !photoMetadataList.isEmpty()) {
+            PhotoMetadata photoMetadata = photoMetadataList.get(0);
+            FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                    .setMaxWidth(800)
+                    .setMaxHeight(800)
+                    .build();
+
+            PlacesClient placesClient = Places.createClient(this);
+            placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+                Bitmap bitmap = fetchPhotoResponse.getBitmap();
+                placeImage.setImageBitmap(bitmap);
+            }).addOnFailureListener((exception) -> {
+                Log.e("MapsActivity", "Error fetching place image", exception);
+            });
+        }
+
         builder.setPositiveButton("Close", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
