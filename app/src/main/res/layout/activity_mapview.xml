@@ -17,10 +17,30 @@
     
 
 
-    <fragment android:id="@+id/autocomplete_fragment"
+    <fragment android:id="@+id/autocomplete_fragment1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
+
+    <fragment android:id="@+id/autocomplete_fragment2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
+
+    <fragment android:id="@+id/autocomplete_fragment3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
+
+    <fragment android:id="@+id/autocomplete_fragment4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
+
+    <fragment android:id="@+id/autocomplete_fragment5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
 
 
 

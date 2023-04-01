@@ -82,7 +82,11 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
     //widgets
     private ImageView mGps;
-    private AutocompleteSupportFragment autocompleteFragment;
+    private AutocompleteSupportFragment autocompleteFragment1;
+    private AutocompleteSupportFragment autocompleteFragment2;
+    private AutocompleteSupportFragment autocompleteFragment3;
+    private AutocompleteSupportFragment autocompleteFragment4;
+    private AutocompleteSupportFragment autocompleteFragment5;
     private ImageView addAutocompleteButton;
 
     //vars
@@ -106,12 +110,35 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         PlacesClient placesClient = Places.createClient(this);
         setContentView(R.layout.activity_mapview);
 
+        autocompleteFragment1 = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment1);
+        autocompleteFragment1.setTypeFilter(TypeFilter.ESTABLISHMENT);
+        autocompleteFragment1.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
+        autocompleteFragment1.setCountries("SG");
+        autocompleteFragment1.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
-        autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-        autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
-        autocompleteFragment.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
-        autocompleteFragment.setCountries("SG");
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+        autocompleteFragment2 = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment2);
+        autocompleteFragment2.setTypeFilter(TypeFilter.ESTABLISHMENT);
+        autocompleteFragment2.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
+        autocompleteFragment2.setCountries("SG");
+        autocompleteFragment2.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+
+        autocompleteFragment3 = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment3);
+        autocompleteFragment3.setTypeFilter(TypeFilter.ESTABLISHMENT);
+        autocompleteFragment3.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
+        autocompleteFragment3.setCountries("SG");
+        autocompleteFragment3.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+
+        autocompleteFragment4 = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment4);
+        autocompleteFragment4.setTypeFilter(TypeFilter.ESTABLISHMENT);
+        autocompleteFragment4.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
+        autocompleteFragment4.setCountries("SG");
+        autocompleteFragment4.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
+
+        autocompleteFragment5 = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment5);
+        autocompleteFragment5.setTypeFilter(TypeFilter.ESTABLISHMENT);
+        autocompleteFragment5.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
+        autocompleteFragment5.setCountries("SG");
+        autocompleteFragment5.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
         mGps = (ImageView) findViewById(R.id.ic_gps);
         addAutocompleteButton = findViewById(R.id.add_autocomplete_button);
@@ -144,11 +171,11 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
     private void init(){
 
-        ViewGroup searchView = (ViewGroup) autocompleteFragment.getView();
-        if (searchView != null) {
-            searchView.setBackgroundColor(Color.WHITE);
+        ViewGroup searchView1 = (ViewGroup) autocompleteFragment1.getView();
+        if (searchView1 != null) {
+            searchView1.setBackgroundColor(Color.WHITE);
         }
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+        autocompleteFragment1.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onError(@NonNull Status status) {}
 
@@ -159,6 +186,75 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        ViewGroup searchView2 = (ViewGroup) autocompleteFragment2.getView();
+        if (searchView2 != null) {
+            searchView2.setBackgroundColor(Color.WHITE);
+        }
+        autocompleteFragment2.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onError(@NonNull Status status) {}
+
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                geoLocate(place.getLatLng());
+                Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ViewGroup searchView3 = (ViewGroup) autocompleteFragment3.getView();
+        if (searchView3 != null) {
+            searchView3.setBackgroundColor(Color.WHITE);
+        }
+        autocompleteFragment3.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onError(@NonNull Status status) {}
+
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                geoLocate(place.getLatLng());
+                Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ViewGroup searchView4 = (ViewGroup) autocompleteFragment4.getView();
+        if (searchView4 != null) {
+            searchView4.setBackgroundColor(Color.WHITE);
+        }
+        autocompleteFragment4.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onError(@NonNull Status status) {}
+
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                geoLocate(place.getLatLng());
+                Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ViewGroup searchView5 = (ViewGroup) autocompleteFragment5.getView();
+        if (searchView5 != null) {
+            searchView5.setBackgroundColor(Color.WHITE);
+        }
+        autocompleteFragment5.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onError(@NonNull Status status) {}
+
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                geoLocate(place.getLatLng());
+                Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        hideBar(autocompleteFragment2);
+        hideBar(autocompleteFragment3);
+        hideBar(autocompleteFragment4);
+        hideBar(autocompleteFragment5);
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -170,18 +266,50 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             public void onClick(View view) {
                 Toast.makeText(Mapview.this, "Clicked! ", Toast.LENGTH_SHORT).show();
-                hideBar();
+
             }
         });
 
         //hideSoftKeyboard();
     }
 
-    public void hideBar(){
-        View autocompleteView = autocompleteFragment.getView();
+    public void hideBar(AutocompleteSupportFragment acf){
+        View autocompleteView = acf.getView();
         if (autocompleteView != null) {
             autocompleteView.setVisibility(View.GONE);
             autocompleteView.setEnabled(false);
+        }
+    }
+
+    public void showBar(int i){
+        switch(i){
+            case 2:
+                View autocompleteView2 = autocompleteFragment2.getView();
+                if (autocompleteView2 != null) {
+                    autocompleteView2.setVisibility(View.VISIBLE);
+                    autocompleteView2.setEnabled(true);
+                }
+
+            case 3:
+                View autocompleteView3 = autocompleteFragment3.getView();
+                if (autocompleteView3 != null) {
+                    autocompleteView3.setVisibility(View.VISIBLE);
+                    autocompleteView3.setEnabled(true);
+                }
+
+            case 4:
+                View autocompleteView4 = autocompleteFragment4.getView();
+                if (autocompleteView4 != null) {
+                    autocompleteView4.setVisibility(View.VISIBLE);
+                    autocompleteView4.setEnabled(true);
+                }
+
+            case 5:
+                View autocompleteView5 = autocompleteFragment5.getView();
+                if (autocompleteView5 != null) {
+                    autocompleteView5.setVisibility(View.VISIBLE);
+                    autocompleteView5.setEnabled(true);
+                }
         }
     }
 
