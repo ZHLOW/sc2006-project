@@ -104,8 +104,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private KmlLayer layer1;
     private KmlLayer layer2;
     private boolean isLayer1Visible = true;
-
     private int COUNT = 5;
+    LatLng[] locations = new LatLng[5];
 
 
 
@@ -193,6 +193,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @SuppressLint("RestrictedApi")
             @Override
             public void onPlaceSelected(@NonNull Place place) {
+                locations[0]=place.getLatLng();
+                autocompleteFragment1.setHint(place.getName());
                 geoLocate(place.getLatLng());
                 Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
             }
@@ -205,6 +207,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @SuppressLint("RestrictedApi")
             @Override
             public void onPlaceSelected(@NonNull Place place) {
+                locations[1]=place.getLatLng();
+                autocompleteFragment2.setHint(place.getName());
                 geoLocate(place.getLatLng());
                 Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
             }
@@ -220,6 +224,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @SuppressLint("RestrictedApi")
             @Override
             public void onPlaceSelected(@NonNull Place place) {
+                locations[2]=place.getLatLng();
+                autocompleteFragment3.setHint(place.getName());
                 geoLocate(place.getLatLng());
                 Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
             }
@@ -234,6 +240,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @SuppressLint("RestrictedApi")
             @Override
             public void onPlaceSelected(@NonNull Place place) {
+                locations[3]=place.getLatLng();
+                autocompleteFragment4.setHint(place.getName());
                 geoLocate(place.getLatLng());
                 Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
             }
@@ -248,6 +256,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @SuppressLint("RestrictedApi")
             @Override
             public void onPlaceSelected(@NonNull Place place) {
+                locations[4]=place.getLatLng();
+                autocompleteFragment5.setHint(place.getName());
                 geoLocate(place.getLatLng());
                 Toast.makeText(Mapview.this, "Place: "+place.getName(), Toast.LENGTH_SHORT).show();
             }
