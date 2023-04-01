@@ -315,6 +315,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
         COUNT--;
 
+
     }
 
     public void showBar(){
@@ -355,6 +356,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     autocompleteView5.setVisibility(View.VISIBLE);
                     autocompleteView5.setEnabled(true);
                 }
+                addAutocompleteButton.setVisibility(View.GONE);
+                addAutocompleteButton.setEnabled(false);
                 break;
         }
     }
