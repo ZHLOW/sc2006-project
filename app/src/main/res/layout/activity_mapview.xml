@@ -81,6 +81,17 @@
         android:src = "@drawable/ic_add_foreground"/>
 
     <ImageView
+        android:id="@+id/remove_autocomplete_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_toRightOf="@+id/add_autocomplete_button"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="650dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/ic_remove_foreground" />
+
+    <ImageView
         android:id="@+id/toggle_layers_button"
         android:layout_width="50dp"
         android:layout_height="50dp"

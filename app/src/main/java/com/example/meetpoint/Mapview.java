@@ -89,7 +89,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     //widgets
     private ImageView mGps;
     private AutocompleteSupportFragment autocompleteFragment1, autocompleteFragment2, autocompleteFragment3, autocompleteFragment4, autocompleteFragment5;
-    private ImageView addAutocompleteButton;
+    private ImageView addAutocompleteButton, removeAutocompleteButton;
 
     //vars
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -146,13 +146,14 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         autocompleteFragment5.setCountries("SG");
         autocompleteFragment5.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
-        hideBar();
-        hideBar();
-        hideBar();
-        hideBar();
-
         mGps = (ImageView) findViewById(R.id.ic_gps);
         addAutocompleteButton = findViewById(R.id.add_autocomplete_button);
+        removeAutocompleteButton = findViewById(R.id.remove_autocomplete_button);
+
+        hideBar();
+        hideBar();
+        hideBar();
+        hideBar();
 
         getLocationPermission();
 
@@ -253,12 +254,6 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         });
 
 
-        /*hideBar();
-        hideBar();
-        hideBar();
-        hideBar(); */
-
-
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -274,6 +269,13 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
 
+        removeAutocompleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideBar();
+            }
+        });
+
         //hideSoftKeyboard();
     }
 
@@ -285,6 +287,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 if (autocompleteView2 != null) {
                     autocompleteView2.setVisibility(View.GONE);
                     autocompleteView2.setEnabled(false);
+
+                    removeAutocompleteButton.setVisibility(View.GONE);
+                    removeAutocompleteButton.setEnabled(false);
                 }
                 break;
 
@@ -309,6 +314,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 if (autocompleteView5 != null) {
                     autocompleteView5.setVisibility(View.GONE);
                     autocompleteView5.setEnabled(false);
+
+                    addAutocompleteButton.setVisibility(View.VISIBLE);
+                    addAutocompleteButton.setEnabled(true);
                 }
                 break;
         }
@@ -327,6 +335,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     autocompleteView2.setBackgroundColor(Color.WHITE);
                     autocompleteView2.setVisibility(View.VISIBLE);
                     autocompleteView2.setEnabled(true);
+
+                    removeAutocompleteButton.setVisibility(View.VISIBLE);
+                    removeAutocompleteButton.setEnabled(true);
                 }
 
                 break;
@@ -356,7 +367,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     autocompleteView5.setVisibility(View.VISIBLE);
                     autocompleteView5.setEnabled(true);
                 }
-                addAutocompleteButton.setVisibility(View.GONE);
+                addAutocompleteButton.setVisibility(View.INVISIBLE);
                 addAutocompleteButton.setEnabled(false);
                 break;
         }
