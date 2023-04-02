@@ -125,35 +125,35 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         setContentView(R.layout.activity_mapview);
 
         autocompleteFragment1 = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment1);
-        autocompleteFragment1.setTypeFilter(TypeFilter.ESTABLISHMENT);
+        //autocompleteFragment1.setTypeFilter(TypeFilter.ESTABLISHMENT);
         autocompleteFragment1.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
         autocompleteFragment1.setCountries("SG");
         autocompleteFragment1.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
 
         autocompleteFragment2 = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment2);
-        autocompleteFragment2.setTypeFilter(TypeFilter.ESTABLISHMENT);
+        //autocompleteFragment2.setTypeFilter(TypeFilter.ESTABLISHMENT);
         autocompleteFragment2.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
         autocompleteFragment2.setCountries("SG");
         autocompleteFragment2.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
         autocompleteFragment2.setHint("Search 2nd Location");
 
         autocompleteFragment3 = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment3);
-        autocompleteFragment3.setTypeFilter(TypeFilter.ESTABLISHMENT);
+        //autocompleteFragment3.setTypeFilter(TypeFilter.ESTABLISHMENT);
         autocompleteFragment3.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
         autocompleteFragment3.setCountries("SG");
         autocompleteFragment3.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
         autocompleteFragment3.setHint("Search 3rd Location");
 
         autocompleteFragment4 = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment4);
-        autocompleteFragment4.setTypeFilter(TypeFilter.ESTABLISHMENT);
+        //autocompleteFragment4.setTypeFilter(TypeFilter.ESTABLISHMENT);
         autocompleteFragment4.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
         autocompleteFragment4.setCountries("SG");
         autocompleteFragment4.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
         autocompleteFragment4.setHint("Search 4th Location");
 
         autocompleteFragment5 = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment5);
-        autocompleteFragment5.setTypeFilter(TypeFilter.ESTABLISHMENT);
+        //autocompleteFragment5.setTypeFilter(TypeFilter.ESTABLISHMENT);
         autocompleteFragment5.setLocationRestriction(RectangularBounds.newInstance(new LatLng(1.1304753,103.6920359),new LatLng(1.4504753,104.0120359)));
         autocompleteFragment5.setCountries("SG");
         autocompleteFragment5.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
@@ -729,9 +729,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             result = new LatLng(latAvg,longAvg);
         }
         Toast.makeText(Mapview.this, "found the result", Toast.LENGTH_SHORT).show();
-        Log.d("MyApp",result.toString());
-        Log.d("MyApp",positions[0].toString());
-        Log.d("MyApp",positions[1].toString());
+        //Log.d("MyApp",result.toString());
+        //Log.d("MyApp",positions[0].toString());
+        //Log.d("MyApp",positions[1].toString());
         //Log.d("MyApp",positions[2].toString());
         //Log.d("MyApp",positions[3].toString());
         //Log.d("MyApp",positions[4].toString());
