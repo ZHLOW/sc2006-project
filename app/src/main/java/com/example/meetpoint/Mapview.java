@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,6 +41,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -64,6 +66,14 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.slider.Slider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.data.kml.KmlLayer;
 import com.google.maps.android.data.Feature;
 import com.google.maps.android.data.Geometry;
@@ -93,7 +103,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     //widgets
     private ImageView mGps;
     private AutocompleteSupportFragment autocompleteFragment1, autocompleteFragment2, autocompleteFragment3, autocompleteFragment4, autocompleteFragment5;
-    private ImageView addAutocompleteButton, removeAutocompleteButton;
+    private ImageView addAutocompleteButton, removeAutocompleteButton, addFriendLocationButton;
 
     //vars
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -163,6 +173,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         mGps = (ImageView) findViewById(R.id.ic_gps);
         addAutocompleteButton = findViewById(R.id.add_autocomplete_button);
         removeAutocompleteButton = findViewById(R.id.remove_autocomplete_button);
+        addFriendLocationButton = findViewById(R.id.add_friend_location_button);
 
         hideBar();
         hideBar();
@@ -302,6 +313,136 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 hideBar();
             }
         });
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // NOT WORKING AS INTENDED: CAN CHOOSE FRIEND BUT UNABLE TO EXTRACT FRIEND'S LOCATIONS, SAYS NULL
+        addFriendLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show a dialog where the user can choose a friend from the list
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser == null) {
+                    // User is not logged in
+                    return;
+                }
+                String currentUserId = currentUser.getUid();
+                DatabaseReference friendsRef = FirebaseDatabase.getInstance().getReference("Users_Requests_And_Friends").child(currentUserId).child("Friends");
+
+                friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<String> friends = new ArrayList<>();
+                        for (DataSnapshot friendSnapshot : snapshot.getChildren()) {
+                            String friendName = friendSnapshot.child("fullName").getValue(String.class);
+                            friends.add(friendName);
+                        }
+
+                        // Show a dialog where the user can choose a friend from the list
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Mapview.this);
+                        builder.setTitle("Select a friend");
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(Mapview.this, android.R.layout.simple_list_item_1, friends);
+
+                        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Retrieve the selected friend's user_id from Firebase
+                                String selectedFriendName = adapter.getItem(which);
+                                Query selectedFriendQuery = friendsRef.orderByChild("fullName").equalTo(selectedFriendName).limitToFirst(1);
+                                selectedFriendQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (!snapshot.exists()) {
+                                            // Selected friend not found in the database
+                                            return;
+                                        }
+                                        String selectedFriendId = snapshot.getChildren().iterator().next().getKey();
+                                        // Retrieve the list of addresses associated with the user_id from Firebase
+                                        DatabaseReference addressesRef = FirebaseDatabase.getInstance().getReference("Users/" + selectedFriendId + "/locations");
+                                        addressesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                                List<String> addresses = new ArrayList<>();
+                                                int counter = 0;
+                                                for (DataSnapshot addressSnapshot : snapshot.getChildren()) {
+                                                    if (counter >= 1) {
+                                                        String address = addressSnapshot.getValue(String.class);
+                                                        addresses.add(address);
+                                                    }
+                                                    counter++;
+                                                }
+
+                                                if (addresses.size() == 1) {
+                                                    // No locations available for the selected friend
+                                                    Toast toast = Toast.makeText(getApplicationContext(), "No locations available", Toast.LENGTH_SHORT);
+                                                    toast.show();
+                                                    return;
+                                                }
+
+                                                // Show a dialog where the user can choose an address from the list
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(Mapview.this);
+                                                builder.setTitle("Select an address");
+
+                                                ArrayAdapter<String> adapter = new ArrayAdapter<>(Mapview.this, android.R.layout.simple_list_item_1, addresses);
+                                                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        // Paste the selected address into the first empty search bar as there can be up to 5
+
+                                                        AutocompleteSupportFragment emptySearchFragment = null;
+                                                        EditText editText1 = autocompleteFragment1.getView().findViewById(R.id.autocomplete_fragment1);
+                                                        EditText editText2 = autocompleteFragment1.getView().findViewById(R.id.autocomplete_fragment2);
+                                                        EditText editText3 = autocompleteFragment1.getView().findViewById(R.id.autocomplete_fragment3);
+                                                        EditText editText4 = autocompleteFragment1.getView().findViewById(R.id.autocomplete_fragment4);
+                                                        EditText editText5 = autocompleteFragment1.getView().findViewById(R.id.autocomplete_fragment5);
+
+                                                        if (editText1.getText().toString().isEmpty()) emptySearchFragment = autocompleteFragment1;
+                                                        else if (editText2.getText().toString().isEmpty()) emptySearchFragment = autocompleteFragment2;
+                                                        else if (editText3.getText().toString().isEmpty()) emptySearchFragment = autocompleteFragment3;
+                                                        else if (editText4.getText().toString().isEmpty()) emptySearchFragment = autocompleteFragment4;
+                                                        else if (editText5.getText().toString().isEmpty()) emptySearchFragment = autocompleteFragment5;
+
+                                                        if (emptySearchFragment == null) {
+                                                            // All search bars are full
+                                                            Toast.makeText(getApplicationContext(), "Maximum of 5 addresses allowed", Toast.LENGTH_SHORT).show();
+                                                            return;
+                                                        }
+                                                        emptySearchFragment.setText(adapter.getItem(which));
+
+//                                                        EditText editText = findViewById(R.id.places_autocomplete_search_input);
+//                                                        editText.setText(adapter.getItem(which));
+
+                                                    }
+                                                });
+                                                builder.show();
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                //Log.d(TAG, "Error retrieving data from Firebase");
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        //Log.d(TAG, "Error retrieving data from Firebase");
+                                    }
+                                });
+                            }
+                        });
+                        builder.show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        //Log.d(TAG, "Error retrieving data from Firebase");
+                    }
+                });
+            }
+        });
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //hideSoftKeyboard();
     }
@@ -589,13 +730,120 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         builder.setNeutralButton("Jio Button", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Your custom action for the button
-                Toast.makeText(getApplicationContext(), "Button clicked!", Toast.LENGTH_SHORT).show();
+                // Get a list of the user's friends
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                String currentUserId = currentUser.getUid();
+                DatabaseReference friendsRef = FirebaseDatabase.getInstance().getReference("Users_Requests_And_Friends/" + currentUserId + "/Friends");
+                friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        ArrayList<String> friendIds = new ArrayList<>();
+                        for (DataSnapshot friendSnapshot : snapshot.getChildren()) {
+                            String friendId = friendSnapshot.getKey();
+                            friendIds.add(friendId);
+                        }
+                        // Create a dialog to let the user select friends to notify
+                        AlertDialog.Builder notifyBuilder = new AlertDialog.Builder(Mapview.this);
+                        notifyBuilder.setTitle("Select Friends to Notify");
+                        String[] friendNames = new String[friendIds.size()];
+                        boolean[] checkedFriends = new boolean[friendIds.size()];
+                        for (int i = 0; i < friendIds.size(); i++) {
+                            final int index = i; // declare a new variable that is effectively final
+                            String friendId = friendIds.get(index);
+                            DatabaseReference friendsNameRef = FirebaseDatabase.getInstance().getReference("Users_Requests_And_Friends/" + currentUserId + "/Friends/" + friendId + "/fullName");
+                            friendsNameRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    String friendName = snapshot.getValue(String.class);
+                                    friendNames[index] = friendName;
+                                    checkedFriends[index] = false;
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    //Log.e(TAG, "Failed to read value.", error.toException());
+                                }
+                            });
+                        }
+
+
+                        notifyBuilder.setMultiChoiceItems(friendNames, checkedFriends, new DialogInterface.OnMultiChoiceClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                                // Update checkedFriends array
+                                checkedFriends[which] = isChecked;
+                            }
+                        });
+                        notifyBuilder.setPositiveButton("Notify", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Confirm with the user that they want to notify the selected friends
+                                AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(Mapview.this);
+                                confirmBuilder.setMessage("Are you sure you want to notify these friends?");
+                                confirmBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // Send notification to selected friends
+                                        for (int i = 0; i < friendIds.size(); i++) {
+                                            String friendId = friendIds.get(i);
+                                            if (checkedFriends[i]) {
+                                                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                                //sendNotification(friendId); // helper function to send a notification to a friend
+                                            }
+                                        }
+                                    }
+                                });
+                                confirmBuilder.setNegativeButton("Cancel", null);
+                                AlertDialog confirmDialog = confirmBuilder.create();
+                                confirmDialog.show();
+                            }
+                        });
+                        notifyBuilder.setNegativeButton("Cancel", null);
+                        AlertDialog notifyDialog = notifyBuilder.create();
+                        notifyDialog.show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        // Handle error
+                    }
+                });
             }
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+
     }
+
+//    private void sendNotification(String friendId) {
+//        // Build the notification message
+//        String notificationMessage = "You have a new message from your friend!";
+//
+//        // Get a reference to the friend's device token from the database
+//        DatabaseReference friendTokenRef = FirebaseDatabase.getInstance().getReference("Users_Requests_And_Friends/" + friendId + "/deviceToken");
+//        friendTokenRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if (dataSnapshot.exists()) {
+//                    String friendDeviceToken = dataSnapshot.getValue(String.class);
+//
+//                    // Use the friend's device token to send a notification using your preferred notification service
+//                    // For example, using Firebase Cloud Messaging:
+//                    FirebaseMessaging.getInstance().send(new RemoteMessage.Builder(friendDeviceToken)
+//                            .setMessageType("notification")
+//                            .putData("message", notificationMessage)
+//                            .build());
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                // Handle the error if there was an issue retrieving the friend's device token
+//            }
+//        });
+//    }
+
+
     private void searchGooglePlace(String name, LatLng position) {
         PlacesClient placesClient = Places.createClient(this);
         RectangularBounds bounds = RectangularBounds.newInstance(

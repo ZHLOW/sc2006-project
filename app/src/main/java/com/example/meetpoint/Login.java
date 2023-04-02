@@ -16,6 +16,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
@@ -96,6 +97,24 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
 
                                 Toast.makeText(Login.this, "Login Success!", Toast.LENGTH_SHORT).show();
                                 progressBar.setVisibility(View.GONE);
+
+                                FirebaseMessaging.getInstance().getToken()
+                                        .addOnCompleteListener(new OnCompleteListener<String>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<String> task) {
+                                                if (!task.isSuccessful()) {
+                                                    System.out.println("Fetching FCM registration token failed");
+                                                    return;
+                                                }
+                                                
+                                                // Get new FCM registration token
+                                                String token = task.getResult();
+
+                                                // Log and toast
+                                                System.out.println("PRINTING YOUR TOKEN:" + token);
+                                                //Toast.makeText(Login.this, token, Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
 
                                 startActivity(new Intent(Login.this, HomePage.class));
 
