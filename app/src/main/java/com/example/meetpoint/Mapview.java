@@ -42,6 +42,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -207,6 +208,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
                 locations[0]=place.getLatLng();
+                resultLatLng = place.getLatLng(); //update result in case user doesnt want more places
                 autocompleteFragment1.setHint(place.getName());
                 geoLocate(place.getLatLng());
 
@@ -422,6 +424,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     .fillColor(Color.rgb(194, 217, 252))
                     .strokeColor(Color.rgb(194, 217, 252))
                     .radius(500));
+            mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
         }
         else{
             Toast.makeText(Mapview.this, "LatLng returned null", Toast.LENGTH_SHORT).show();
