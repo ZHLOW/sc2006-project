@@ -39,10 +39,10 @@ public class FriendProfileFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_friends_profile, container, false);
         Bundle bundle = this.getArguments();
         friendProfileID = bundle.getString("friendUserID");
-        textViewUniqueID = view.findViewById(R.id.textView_show_unqiueID);
+        textViewUniqueID = view.findViewById(R.id.textView_show_uniqueID);
         textViewUsername = view.findViewById(R.id.textView_show_username);
         textViewFullName = view.findViewById(R.id.textView_show_full_name);
         textViewEmail = view.findViewById(R.id.textView_show_email);

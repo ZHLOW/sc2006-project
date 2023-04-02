@@ -1,5 +1,6 @@
 package com.example.meetpoint;
 
+import android.widget.Button;
 import android.widget.Toast;
 import android.app.Activity;
 import android.content.Intent;
@@ -8,12 +9,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.activity.OnBackPressedCallback;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,6 +50,7 @@ public class ProfileFragment extends Fragment {
     FirebaseUser user;
     ImageView imageView;
     private TextView textViewUsername, textViewFullName, textViewEmail,  textViewMobile , textViewUniqueID, textViewLocation;
+    private Button EditAddressesBtn;
 
     Activity context = getActivity();
 
@@ -55,7 +60,7 @@ public class ProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_profile,container,false);
 
-        textViewUniqueID = view.findViewById(R.id.textView_show_unqiueID);
+        textViewUniqueID = view.findViewById(R.id.textView_show_uniqueID);
         textViewUsername = view.findViewById(R.id.textView_show_username);
         textViewFullName = view.findViewById(R.id.textView_show_full_name);
         textViewEmail = view.findViewById(R.id.textView_show_email);
@@ -63,12 +68,36 @@ public class ProfileFragment extends Fragment {
         textViewLocation = view.findViewById(R.id.textView_show_location);
         authProfile = FirebaseAuth.getInstance();
         imageView = view.findViewById(R.id.imageViewProfileDP);
+        EditAddressesBtn = view.findViewById(R.id.Edit_Addresses_Btn);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 requestStoragePermissionAndOpenImagePicker();
             }
         });
+
+        EditAddressesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Replace the current fragment with the EditAddressesFragment.
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                // Create a new instance of EditAddressesFragment
+                EditAddressesFragment editAddressesFragment = new EditAddressesFragment();
+
+                // Add the user_id as an argument to the fragment
+                Bundle args = new Bundle();
+                args.putString("user_id", user.getUid());
+                editAddressesFragment.setArguments(args);
+
+                // Replace the current fragment with the new instance of EditAddressesFragment
+                fragmentTransaction.replace(R.id.fragment_container, editAddressesFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
+
 
         FirebaseUser firebaseUser = authProfile.getCurrentUser();
         String userID = firebaseUser.getUid();
