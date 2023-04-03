@@ -390,7 +390,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         // Paste the selected address into the first empty search bar as there can be up to 5
 
-                                                        AutocompleteSupportFragment emptySearchFragment = null;
+                                                        /*AutocompleteSupportFragment emptySearchFragment = null;
                                                         EditText editText1 = autocompleteFragment1.getView().findViewById(R.id.autocomplete_fragment1);
                                                         EditText editText2 = autocompleteFragment1.getView().findViewById(R.id.autocomplete_fragment2);
                                                         EditText editText3 = autocompleteFragment1.getView().findViewById(R.id.autocomplete_fragment3);
@@ -407,8 +407,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             // All search bars are full
                                                             Toast.makeText(getApplicationContext(), "Maximum of 5 addresses allowed", Toast.LENGTH_SHORT).show();
                                                             return;
-                                                        }
-                                                        emptySearchFragment.setText(adapter.getItem(which));
+                                                        } */
+                                                        autocompleteFragment1.setText(adapter.getItem(which));
 
 //                                                        EditText editText = findViewById(R.id.places_autocomplete_search_input);
 //                                                        editText.setText(adapter.getItem(which));
