@@ -135,6 +135,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private LatLng resultLatLng = new LatLng(0,0);
     private Context con = this;
     ArrayList<Marker> markerList = new ArrayList<>();
+    ArrayList<Circle> circleList = new ArrayList<>();
     Marker[] yellowmarkers = new Marker[5];
 
 
@@ -363,6 +364,11 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 }
                 markerList.clear();
 
+                for (Circle circle : circleList) {
+                    circle.remove();
+                }
+                circleList.clear();
+
                 resultLatLng = findMP(locations);
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(resultLatLng, DEFAULT_ZOOM));
                     mapCircle = mMap.addCircle(new CircleOptions()
@@ -374,6 +380,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                             .position(resultLatLng)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
                 markerList.add(marker);
+                circleList.add(mapCircle);
 
 
 
@@ -469,6 +476,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                 builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
+
+                                                        if(yellowmarkers[0]!=null){
+                                                            yellowmarkers[0].remove();
+                                                        }
 
                                                         autocompleteFragment1.setText(adapter.getItem(which));
                                                         Geocoder geocoder = new Geocoder(Mapview.this);
@@ -591,6 +602,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
 
+                                                        if(yellowmarkers[1]!=null){
+                                                            yellowmarkers[1].remove();
+                                                        }
+
                                                         autocompleteFragment2.setText(adapter.getItem(which));
                                                         Geocoder geocoder = new Geocoder(Mapview.this);
                                                         List<Address> addressList = null;
@@ -712,6 +727,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
 
+                                                        if(yellowmarkers[2]!=null){
+                                                            yellowmarkers[2].remove();
+                                                        }
+
                                                         autocompleteFragment3.setText(adapter.getItem(which));
                                                         Geocoder geocoder = new Geocoder(Mapview.this);
                                                         List<Address> addressList = null;
@@ -831,6 +850,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                 builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
+
+                                                        if(yellowmarkers[3]!=null){
+                                                            yellowmarkers[3].remove();
+                                                        }
 
                                                         autocompleteFragment4.setText(adapter.getItem(which));
                                                         Geocoder geocoder = new Geocoder(Mapview.this);
@@ -952,6 +975,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
 
+                                                        if(yellowmarkers[4]!=null){
+                                                            yellowmarkers[4].remove();
+                                                        }
+
                                                         autocompleteFragment5.setText(adapter.getItem(which));
                                                         Geocoder geocoder = new Geocoder(Mapview.this);
                                                         List<Address> addressList = null;
@@ -1018,6 +1045,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 }
                 addFriendLocationButton2.setVisibility(View.GONE);
                 addFriendLocationButton2.setEnabled(false);
+                if(yellowmarkers[1]!=null){
+                    yellowmarkers[1].remove();
+                }
                 break;
 
             case 3:
@@ -1032,6 +1062,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 }
                 addFriendLocationButton3.setVisibility(View.GONE);
                 addFriendLocationButton4.setEnabled(false);
+                if(yellowmarkers[2]!=null){
+                    yellowmarkers[2].remove();
+                }
                 break;
 
             case 4:
@@ -1046,6 +1079,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 }
                 addFriendLocationButton4.setVisibility(View.GONE);
                 addFriendLocationButton4.setEnabled(false);
+                if(yellowmarkers[3]!=null){
+                    yellowmarkers[3].remove();
+                }
                 break;
 
             case 5:
@@ -1063,6 +1099,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     locations[4] = null;
                     autocompleteFragment5.setText("");
                     autocompleteFragment5.setHint("Search 5th Location");
+                }
+                if(yellowmarkers[4]!=null){
+                    yellowmarkers[4].remove();
                 }
                 break;
         }
@@ -1132,11 +1171,13 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private void geoLocate(LatLng latLng){
         if (latLng != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
-            mapCircle = mMap.addCircle(new CircleOptions()
+            /*mapCircle = mMap.addCircle(new CircleOptions()
                     .center(latLng)
                     .fillColor(Color.rgb(194, 217, 252))
                     .strokeColor(Color.rgb(194, 217, 252))
                     .radius(500));
+
+            circleList.add(mapCircle);*/
             /*Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
