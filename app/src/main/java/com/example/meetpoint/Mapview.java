@@ -138,7 +138,6 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     ArrayList<Circle> circleList = new ArrayList<>();
     Marker[] yellowmarkers = new Marker[5];
 
-    ArrayList<Circle> circleList = new ArrayList<>();
 
     Circle[] circleArray = new Circle[5];
 
