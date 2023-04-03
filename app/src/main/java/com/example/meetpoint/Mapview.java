@@ -125,6 +125,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private Circle mapCircle;
     private CircleOptions circleOptions;
     private LatLng resultLatLng = new LatLng(0,0);
+    private Context con = this;
 
 
 
@@ -409,6 +410,17 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             return;
                                                         } */
                                                         autocompleteFragment1.setText(adapter.getItem(which));
+                                                        Geocoder geocoder = new Geocoder(Mapview.this);
+                                                        List<Address> addressList = null;
+                                                        try{
+                                                            addressList = geocoder.getFromLocationName(adapter.getItem(which),1);
+                                                        } catch (IOException e) {
+                                                            Toast.makeText(Mapview.this, "Address doesnt exist", Toast.LENGTH_SHORT).show();;
+                                                        }
+
+                                                        Address userAddress = addressList.get(0);
+                                                        LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
+                                                        geoLocate(latLng);
 
 //                                                        EditText editText = findViewById(R.id.places_autocomplete_search_input);
 //                                                        editText.setText(adapter.getItem(which));
