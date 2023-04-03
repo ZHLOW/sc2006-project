@@ -130,12 +130,16 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     LatLng[] locations = new LatLng[5];
 
     private float radius;
-    private Circle mapCircle;
+    private Circle currentCircle;
     private CircleOptions circleOptions;
-    private LatLng resultLatLng = new LatLng(0,0);
+    private LatLng currentLatLng = new LatLng(0,0);
     private Context con = this;
     ArrayList<Marker> markerList = new ArrayList<>();
     Marker[] yellowmarkers = new Marker[5];
+
+    ArrayList<Circle> circleList = new ArrayList<>();
+
+    Circle[] circleArray = new Circle[5];
 
 
 
@@ -219,6 +223,21 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
+    public void addCircle_addMarker(LatLng latLng, int i ){
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+        yellowmarkers[i]=marker;
+
+        currentCircle = mMap.addCircle(new CircleOptions()
+                .center(latLng)
+                .fillColor(Color.rgb(194, 217, 252))
+                .strokeColor(Color.rgb(194, 217, 252))
+                .radius(500));
+        circleArray[i] = currentCircle;
+    }
+
+
 
     private void init(){
 
@@ -236,17 +255,17 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 if(yellowmarkers[0]!=null){
                     yellowmarkers[0].remove();
                 }
+                if(circleArray[0]!=null){
+                    currentCircle.remove();
+                    circleArray[0].remove();
+                }
 
 
                 locations[0]=place.getLatLng();
-                resultLatLng = place.getLatLng(); //update result in case user doesnt want more places
+                currentLatLng = place.getLatLng(); //update result in case user doesnt want more places
                 autocompleteFragment1.setHint(place.getName());
                 geoLocate(place.getLatLng());
-
-                Marker marker = mMap.addMarker(new MarkerOptions()
-                        .position(place.getLatLng())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                yellowmarkers[0]=marker;
+                addCircle_addMarker(place.getLatLng(),0);
 
             }
         });
@@ -262,15 +281,16 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 if(yellowmarkers[1]!=null){
                     yellowmarkers[1].remove();
                 }
+                if(circleArray[1]!=null){
+                    currentCircle.remove();
+                    circleArray[1].remove();
+                }
 
                 locations[1]=place.getLatLng();
+                currentLatLng = place.getLatLng();
                 autocompleteFragment2.setHint(place.getName());
                 geoLocate(place.getLatLng());
-
-                Marker marker = mMap.addMarker(new MarkerOptions()
-                        .position(place.getLatLng())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                yellowmarkers[1]=marker;
+                addCircle_addMarker(place.getLatLng(),1);
             }
         });
 
@@ -288,15 +308,16 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 if(yellowmarkers[2]!=null){
                     yellowmarkers[2].remove();
                 }
+                if(circleArray[2]!=null){
+                    currentCircle.remove();
+                    circleArray[2].remove();
+                }
 
                 locations[2]=place.getLatLng();
+                currentLatLng = place.getLatLng();
                 autocompleteFragment3.setHint(place.getName());
                 geoLocate(place.getLatLng());
-
-                Marker marker = mMap.addMarker(new MarkerOptions()
-                        .position(place.getLatLng())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                yellowmarkers[2]=marker;
+                addCircle_addMarker(place.getLatLng(),2);
 
             }
         });
@@ -314,16 +335,16 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 if(yellowmarkers[3]!=null){
                     yellowmarkers[3].remove();
                 }
+                if(circleArray[3]!=null){
+                    currentCircle.remove();
+                    circleArray[3].remove();
+                }
 
                 locations[3]=place.getLatLng();
+                currentLatLng = place.getLatLng();
                 autocompleteFragment4.setHint(place.getName());
                 geoLocate(place.getLatLng());
-
-                Marker marker = mMap.addMarker(new MarkerOptions()
-                        .position(place.getLatLng())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                yellowmarkers[3]=marker;
-
+                addCircle_addMarker(place.getLatLng(),3);
             }
         });
 
@@ -340,15 +361,16 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 if(yellowmarkers[4]!=null){
                     yellowmarkers[4].remove();
                 }
+                if(circleArray[4]!=null){
+                    currentCircle.remove();
+                    circleArray[4].remove();
+                }
 
                 locations[4]=place.getLatLng();
+                currentLatLng = place.getLatLng();
                 autocompleteFragment5.setHint(place.getName());
                 geoLocate(place.getLatLng());
-
-                Marker marker = mMap.addMarker(new MarkerOptions()
-                        .position(place.getLatLng())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                yellowmarkers[4]=marker;
+                addCircle_addMarker(place.getLatLng(),4);
 
             }
         });
@@ -363,17 +385,26 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 }
                 markerList.clear();
 
-                resultLatLng = findMP(locations);
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(resultLatLng, DEFAULT_ZOOM));
-                    mapCircle = mMap.addCircle(new CircleOptions()
-                            .center(resultLatLng)
+
+                for (Circle circle : circleList) {
+                    circle.remove();
+                }
+                circleList.clear();
+
+                currentCircle.remove();
+
+                currentLatLng = findMP(locations);
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, DEFAULT_ZOOM));
+                Circle circle = mMap.addCircle(new CircleOptions()
+                            .center(currentLatLng)
                             .fillColor(Color.rgb(194, 217, 252))
                             .strokeColor(Color.rgb(194, 217, 252))
                             .radius(500));
                 Marker marker = mMap.addMarker(new MarkerOptions()
-                            .position(resultLatLng)
+                            .position(currentLatLng)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
                 markerList.add(marker);
+                circleList.add(circle);
 
 
 
@@ -478,10 +509,15 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
                                                             locations[0]=latLng;
-                                                            Marker marker = mMap.addMarker(new MarkerOptions()
-                                                                    .position(latLng)
-                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                                                            yellowmarkers[0]=marker;
+                                                            if(yellowmarkers[0]!=null){
+                                                                yellowmarkers[0].remove();
+                                                            }
+                                                            if(circleArray[0]!=null){
+                                                                currentCircle.remove();
+                                                                circleArray[0].remove();
+                                                            }
+                                                            currentLatLng = latLng;
+                                                            addCircle_addMarker(latLng,0);
                                                             geoLocate(latLng);
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
@@ -599,10 +635,15 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
                                                             locations[1]=latLng;
-                                                            Marker marker = mMap.addMarker(new MarkerOptions()
-                                                                    .position(latLng)
-                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                                                            yellowmarkers[1]=marker;
+                                                            currentLatLng = latLng;
+                                                            if(yellowmarkers[1]!=null){
+                                                                yellowmarkers[1].remove();
+                                                            }
+                                                            if(circleArray[1]!=null){
+                                                                currentCircle.remove();
+                                                                circleArray[1].remove();
+                                                            }
+                                                            addCircle_addMarker(latLng,1);
                                                             geoLocate(latLng);
 
                                                         } catch (Exception e) {
@@ -720,10 +761,15 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
                                                             locations[2]=latLng;
-                                                            Marker marker = mMap.addMarker(new MarkerOptions()
-                                                                    .position(latLng)
-                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                                                            yellowmarkers[2]=marker;
+                                                            currentLatLng = latLng;
+                                                            if(yellowmarkers[2]!=null){
+                                                                yellowmarkers[2].remove();
+                                                            }
+                                                            if(circleArray[2]!=null){
+                                                                currentCircle.remove();
+                                                                circleArray[2].remove();
+                                                            }
+                                                            addCircle_addMarker(latLng,2);
                                                             geoLocate(latLng);
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
@@ -840,10 +886,15 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
                                                             locations[3]=latLng;
-                                                            Marker marker = mMap.addMarker(new MarkerOptions()
-                                                                    .position(latLng)
-                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                                                            yellowmarkers[3]=marker;
+                                                            currentLatLng = latLng;
+                                                            if(yellowmarkers[3]!=null){
+                                                                yellowmarkers[3].remove();
+                                                            }
+                                                            if(circleArray[3]!=null){
+                                                                currentCircle.remove();
+                                                                circleArray[3].remove();
+                                                            }
+                                                            addCircle_addMarker(latLng,3);
                                                             geoLocate(latLng);
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
@@ -960,10 +1011,15 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
                                                             locations[4]=latLng;
-                                                            Marker marker = mMap.addMarker(new MarkerOptions()
-                                                                    .position(latLng)
-                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-                                                            yellowmarkers[4]=marker;
+                                                            currentLatLng = latLng;
+                                                            if(yellowmarkers[4]!=null){
+                                                                yellowmarkers[4].remove();
+                                                            }
+                                                            if(circleArray[4]!=null){
+                                                                currentCircle.remove();
+                                                                circleArray[4].remove();
+                                                            }
+                                                            addCircle_addMarker(latLng,4);
                                                             geoLocate(latLng);
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
@@ -1012,6 +1068,19 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     removeAutocompleteButton.setVisibility(View.GONE);
                     removeAutocompleteButton.setEnabled(false);
 
+                    //remove marker and circles
+                    if(yellowmarkers[1] != null){
+                        yellowmarkers[1].remove();
+                        yellowmarkers[1] = null;
+                    }
+                    if(circleArray[1] != null){
+                        currentCircle.remove();
+                        circleArray[1].remove();
+                        circleArray[1] = null;
+                    }
+
+
+
                     locations[1] = null;
                     autocompleteFragment2.setText("");
                     autocompleteFragment2.setHint("Search 2nd Location");
@@ -1026,6 +1095,17 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     autocompleteView3.setVisibility(View.GONE);
                     autocompleteView3.setEnabled(false);
 
+                    //remove marker and circles
+                    if(yellowmarkers[2] != null){
+                        yellowmarkers[2].remove();
+                        yellowmarkers[2] = null;
+                    }
+                    if(circleArray[2] != null){
+                        currentCircle.remove();
+                        circleArray[2].remove();
+                        circleArray[2] = null;
+                    }
+
                     locations[2] = null;
                     autocompleteFragment3.setText("");
                     autocompleteFragment3.setHint("Search 3rd Location");
@@ -1039,6 +1119,18 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 if (autocompleteView4 != null) {
                     autocompleteView4.setVisibility(View.GONE);
                     autocompleteView4.setEnabled(false);
+
+
+                    //remove marker and circles
+                    if(yellowmarkers[3] != null){
+                        yellowmarkers[3].remove();
+                        yellowmarkers[3] = null;
+                    }
+                    if(circleArray[3] != null){
+                        currentCircle.remove();
+                        circleArray[3].remove();
+                        circleArray[3] = null;
+                    }
 
                     locations[3] = null;
                     autocompleteFragment4.setText("");
@@ -1059,6 +1151,17 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
                     addFriendLocationButton5.setVisibility(View.GONE);
                     addFriendLocationButton5.setEnabled(false);
+
+                    //remove marker and circles
+                    if(yellowmarkers[4] != null){
+                        yellowmarkers[4].remove();
+                        yellowmarkers[4] = null;
+                    }
+                    if(circleArray[4] != null){
+                        currentCircle.remove();
+                        circleArray[4].remove();
+                        circleArray[4] = null;
+                    }
 
                     locations[4] = null;
                     autocompleteFragment5.setText("");
@@ -1132,15 +1235,6 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private void geoLocate(LatLng latLng){
         if (latLng != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, DEFAULT_ZOOM));
-            mapCircle = mMap.addCircle(new CircleOptions()
-                    .center(latLng)
-                    .fillColor(Color.rgb(194, 217, 252))
-                    .strokeColor(Color.rgb(194, 217, 252))
-                    .radius(500));
-            /*Marker marker = mMap.addMarker(new MarkerOptions()
-                    .position(latLng)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-            markerList.add(marker);*/
         }
         else{
             Toast.makeText(Mapview.this, "LatLng returned null", Toast.LENGTH_SHORT).show();
@@ -1517,14 +1611,14 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         radiusSlider.addOnChangeListener(new Slider.OnChangeListener() {
             @Override
             public void onValueChange(@NonNull Slider slider, float value, boolean fromUser) {
-                if (mapCircle == null){
+                if (currentCircle == null){
                     radius = value;
                 }
                 else{
-                    if(mapCircle != null) mapCircle.remove();
+                    if(currentCircle != null) currentCircle.remove();
                     radius = value;
-                    mapCircle = mMap.addCircle(new CircleOptions()
-                            .center(resultLatLng)
+                    currentCircle = mMap.addCircle(new CircleOptions()
+                            .center(currentLatLng)
                             .fillColor(Color.rgb(194, 217, 252))
                             .strokeColor(Color.rgb(194, 217, 252))
                             .radius(radius));
@@ -1569,12 +1663,6 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             result = new LatLng(latAvg,longAvg);
         }
         Toast.makeText(Mapview.this, "found the result", Toast.LENGTH_SHORT).show();
-        //Log.d("MyApp",result.toString());
-        //Log.d("MyApp",positions[0].toString());
-        //Log.d("MyApp",positions[1].toString());
-        //Log.d("MyApp",positions[2].toString());
-        //Log.d("MyApp",positions[3].toString());
-        //Log.d("MyApp",positions[4].toString());
 
         return result;
     }
