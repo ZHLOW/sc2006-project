@@ -134,6 +134,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private CircleOptions circleOptions;
     private LatLng resultLatLng = new LatLng(0,0);
     private Context con = this;
+    ArrayList<Marker> markerList = new ArrayList<>();
 
 
 
@@ -306,6 +307,12 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                for (Marker marker : markerList) {
+                    marker.remove();
+                }
+                markerList.clear();
+
                 resultLatLng = findMP(locations);
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(resultLatLng, DEFAULT_ZOOM));
                     mapCircle = mMap.addCircle(new CircleOptions()
@@ -313,9 +320,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                             .fillColor(Color.rgb(194, 217, 252))
                             .strokeColor(Color.rgb(194, 217, 252))
                             .radius(500));
-                    mMap.addMarker(new MarkerOptions()
+                Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(resultLatLng)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+                markerList.add(marker);
 
 
 
