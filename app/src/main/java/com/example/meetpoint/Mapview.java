@@ -135,6 +135,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     private LatLng resultLatLng = new LatLng(0,0);
     private Context con = this;
     ArrayList<Marker> markerList = new ArrayList<>();
+    Marker[] yellowmarkers = new Marker[5];
 
 
 
@@ -232,10 +233,20 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @SuppressLint("RestrictedApi")
             @Override
             public void onPlaceSelected(@NonNull Place place) {
+                if(yellowmarkers[0]!=null){
+                    yellowmarkers[0].remove();
+                }
+
+
                 locations[0]=place.getLatLng();
                 resultLatLng = place.getLatLng(); //update result in case user doesnt want more places
                 autocompleteFragment1.setHint(place.getName());
                 geoLocate(place.getLatLng());
+
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(place.getLatLng())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                yellowmarkers[0]=marker;
 
             }
         });
@@ -247,10 +258,19 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @SuppressLint("RestrictedApi")
             @Override
             public void onPlaceSelected(@NonNull Place place) {
+
+                if(yellowmarkers[1]!=null){
+                    yellowmarkers[1].remove();
+                }
+
                 locations[1]=place.getLatLng();
                 autocompleteFragment2.setHint(place.getName());
                 geoLocate(place.getLatLng());
 
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(place.getLatLng())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                yellowmarkers[1]=marker;
             }
         });
 
@@ -264,9 +284,19 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @SuppressLint("RestrictedApi")
             @Override
             public void onPlaceSelected(@NonNull Place place) {
+
+                if(yellowmarkers[2]!=null){
+                    yellowmarkers[2].remove();
+                }
+
                 locations[2]=place.getLatLng();
                 autocompleteFragment3.setHint(place.getName());
                 geoLocate(place.getLatLng());
+
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(place.getLatLng())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                yellowmarkers[2]=marker;
 
             }
         });
@@ -280,9 +310,19 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @SuppressLint("RestrictedApi")
             @Override
             public void onPlaceSelected(@NonNull Place place) {
+
+                if(yellowmarkers[3]!=null){
+                    yellowmarkers[3].remove();
+                }
+
                 locations[3]=place.getLatLng();
                 autocompleteFragment4.setHint(place.getName());
                 geoLocate(place.getLatLng());
+
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(place.getLatLng())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                yellowmarkers[3]=marker;
 
             }
         });
@@ -296,9 +336,19 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @SuppressLint("RestrictedApi")
             @Override
             public void onPlaceSelected(@NonNull Place place) {
+
+                if(yellowmarkers[4]!=null){
+                    yellowmarkers[4].remove();
+                }
+
                 locations[4]=place.getLatLng();
                 autocompleteFragment5.setHint(place.getName());
                 geoLocate(place.getLatLng());
+
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(place.getLatLng())
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                yellowmarkers[4]=marker;
 
             }
         });
@@ -1066,9 +1116,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     .fillColor(Color.rgb(194, 217, 252))
                     .strokeColor(Color.rgb(194, 217, 252))
                     .radius(500));
-            mMap.addMarker(new MarkerOptions()
+            /*Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+            markerList.add(marker);*/
         }
         else{
             Toast.makeText(Mapview.this, "LatLng returned null", Toast.LENGTH_SHORT).show();
