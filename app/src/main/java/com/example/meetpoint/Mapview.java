@@ -103,7 +103,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
     //widgets
     private ImageView mGps;
     private AutocompleteSupportFragment autocompleteFragment1, autocompleteFragment2, autocompleteFragment3, autocompleteFragment4, autocompleteFragment5;
-    private ImageView addAutocompleteButton, removeAutocompleteButton, addFriendLocationButton;
+    private ImageView addAutocompleteButton, removeAutocompleteButton, addFriendLocationButton, addFriendLocationButton2, addFriendLocationButton3, addFriendLocationButton4, addFriendLocationButton5;
 
     //vars
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -175,6 +175,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         addAutocompleteButton = findViewById(R.id.add_autocomplete_button);
         removeAutocompleteButton = findViewById(R.id.remove_autocomplete_button);
         addFriendLocationButton = findViewById(R.id.add_friend_location_button);
+        addFriendLocationButton2 = findViewById(R.id.add_friend_location_button2);
+        addFriendLocationButton3 = findViewById(R.id.add_friend_location_button3);
+        addFriendLocationButton4 = findViewById(R.id.add_friend_location_button4);
+        addFriendLocationButton5 = findViewById(R.id.add_friend_location_button5);
 
         hideBar();
         hideBar();
@@ -389,26 +393,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                 builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
-                                                        // Paste the selected address into the first empty search bar as there can be up to 5
 
-                                                        /*AutocompleteSupportFragment emptySearchFragment = null;
-                                                        EditText editText1 = autocompleteFragment1.getView().findViewById(R.id.autocomplete_fragment1);
-                                                        EditText editText2 = autocompleteFragment1.getView().findViewById(R.id.autocomplete_fragment2);
-                                                        EditText editText3 = autocompleteFragment1.getView().findViewById(R.id.autocomplete_fragment3);
-                                                        EditText editText4 = autocompleteFragment1.getView().findViewById(R.id.autocomplete_fragment4);
-                                                        EditText editText5 = autocompleteFragment1.getView().findViewById(R.id.autocomplete_fragment5);
-
-                                                        if (editText1.getText().toString().isEmpty()) emptySearchFragment = autocompleteFragment1;
-                                                        else if (editText2.getText().toString().isEmpty()) emptySearchFragment = autocompleteFragment2;
-                                                        else if (editText3.getText().toString().isEmpty()) emptySearchFragment = autocompleteFragment3;
-                                                        else if (editText4.getText().toString().isEmpty()) emptySearchFragment = autocompleteFragment4;
-                                                        else if (editText5.getText().toString().isEmpty()) emptySearchFragment = autocompleteFragment5;
-
-                                                        if (emptySearchFragment == null) {
-                                                            // All search bars are full
-                                                            Toast.makeText(getApplicationContext(), "Maximum of 5 addresses allowed", Toast.LENGTH_SHORT).show();
-                                                            return;
-                                                        } */
                                                         autocompleteFragment1.setText(adapter.getItem(which));
                                                         Geocoder geocoder = new Geocoder(Mapview.this);
                                                         List<Address> addressList = null;
@@ -420,11 +405,6 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
                                                         }
-
-
-
-//                                                        EditText editText = findViewById(R.id.places_autocomplete_search_input);
-//                                                        editText.setText(adapter.getItem(which));
 
                                                     }
                                                 });
@@ -457,7 +437,465 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         });
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        //hideSoftKeyboard();
+        addFriendLocationButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show a dialog where the user can choose a friend from the list
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser == null) {
+                    // User is not logged in
+                    return;
+                }
+                String currentUserId = currentUser.getUid();
+                DatabaseReference friendsRef = FirebaseDatabase.getInstance().getReference("Users_Requests_And_Friends").child(currentUserId).child("Friends");
+
+                friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<String> friends = new ArrayList<>();
+                        for (DataSnapshot friendSnapshot : snapshot.getChildren()) {
+                            String friendName = friendSnapshot.child("fullName").getValue(String.class);
+                            friends.add(friendName);
+                        }
+
+                        // Show a dialog where the user can choose a friend from the list
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Mapview.this);
+                        builder.setTitle("Select a friend");
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(Mapview.this, android.R.layout.simple_list_item_1, friends);
+
+                        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Retrieve the selected friend's user_id from Firebase
+                                String selectedFriendName = adapter.getItem(which);
+                                Query selectedFriendQuery = friendsRef.orderByChild("fullName").equalTo(selectedFriendName).limitToFirst(1);
+                                selectedFriendQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (!snapshot.exists()) {
+                                            // Selected friend not found in the database
+                                            return;
+                                        }
+                                        String selectedFriendId = snapshot.getChildren().iterator().next().getKey();
+                                        // Retrieve the list of addresses associated with the user_id from Firebase
+                                        DatabaseReference addressesRef = FirebaseDatabase.getInstance().getReference("Users/" + selectedFriendId + "/locations");
+                                        addressesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                                List<String> addresses = new ArrayList<>();
+                                                int counter = 0;
+                                                for (DataSnapshot addressSnapshot : snapshot.getChildren()) {
+                                                    if (counter >= 1) {
+                                                        String address = addressSnapshot.getValue(String.class);
+                                                        addresses.add(address);
+                                                    }
+                                                    counter++;
+                                                }
+
+                                                if (addresses.size() == 1) {
+                                                    // No locations available for the selected friend
+                                                    Toast toast = Toast.makeText(getApplicationContext(), "No locations available", Toast.LENGTH_SHORT);
+                                                    toast.show();
+                                                    return;
+                                                }
+
+                                                // Show a dialog where the user can choose an address from the list
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(Mapview.this);
+                                                builder.setTitle("Select an address");
+
+                                                ArrayAdapter<String> adapter = new ArrayAdapter<>(Mapview.this, android.R.layout.simple_list_item_1, addresses);
+                                                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+
+                                                        autocompleteFragment2.setText(adapter.getItem(which));
+                                                        Geocoder geocoder = new Geocoder(Mapview.this);
+                                                        List<Address> addressList = null;
+                                                        try{
+                                                            addressList = geocoder.getFromLocationName(adapter.getItem(which),1);
+                                                            Address userAddress = addressList.get(0);
+                                                            LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
+                                                            geoLocate(latLng);
+                                                        } catch (Exception e) {
+                                                            Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
+                                                        }
+
+                                                    }
+                                                });
+                                                builder.show();
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                //Log.d(TAG, "Error retrieving data from Firebase");
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        //Log.d(TAG, "Error retrieving data from Firebase");
+                                    }
+                                });
+                            }
+                        });
+                        builder.show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        //Log.d(TAG, "Error retrieving data from Firebase");
+                    }
+                });
+            }
+        });
+
+        addFriendLocationButton3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show a dialog where the user can choose a friend from the list
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser == null) {
+                    // User is not logged in
+                    return;
+                }
+                String currentUserId = currentUser.getUid();
+                DatabaseReference friendsRef = FirebaseDatabase.getInstance().getReference("Users_Requests_And_Friends").child(currentUserId).child("Friends");
+
+                friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<String> friends = new ArrayList<>();
+                        for (DataSnapshot friendSnapshot : snapshot.getChildren()) {
+                            String friendName = friendSnapshot.child("fullName").getValue(String.class);
+                            friends.add(friendName);
+                        }
+
+                        // Show a dialog where the user can choose a friend from the list
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Mapview.this);
+                        builder.setTitle("Select a friend");
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(Mapview.this, android.R.layout.simple_list_item_1, friends);
+
+                        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Retrieve the selected friend's user_id from Firebase
+                                String selectedFriendName = adapter.getItem(which);
+                                Query selectedFriendQuery = friendsRef.orderByChild("fullName").equalTo(selectedFriendName).limitToFirst(1);
+                                selectedFriendQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (!snapshot.exists()) {
+                                            // Selected friend not found in the database
+                                            return;
+                                        }
+                                        String selectedFriendId = snapshot.getChildren().iterator().next().getKey();
+                                        // Retrieve the list of addresses associated with the user_id from Firebase
+                                        DatabaseReference addressesRef = FirebaseDatabase.getInstance().getReference("Users/" + selectedFriendId + "/locations");
+                                        addressesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                                List<String> addresses = new ArrayList<>();
+                                                int counter = 0;
+                                                for (DataSnapshot addressSnapshot : snapshot.getChildren()) {
+                                                    if (counter >= 1) {
+                                                        String address = addressSnapshot.getValue(String.class);
+                                                        addresses.add(address);
+                                                    }
+                                                    counter++;
+                                                }
+
+                                                if (addresses.size() == 1) {
+                                                    // No locations available for the selected friend
+                                                    Toast toast = Toast.makeText(getApplicationContext(), "No locations available", Toast.LENGTH_SHORT);
+                                                    toast.show();
+                                                    return;
+                                                }
+
+                                                // Show a dialog where the user can choose an address from the list
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(Mapview.this);
+                                                builder.setTitle("Select an address");
+
+                                                ArrayAdapter<String> adapter = new ArrayAdapter<>(Mapview.this, android.R.layout.simple_list_item_1, addresses);
+                                                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+
+                                                        autocompleteFragment3.setText(adapter.getItem(which));
+                                                        Geocoder geocoder = new Geocoder(Mapview.this);
+                                                        List<Address> addressList = null;
+                                                        try{
+                                                            addressList = geocoder.getFromLocationName(adapter.getItem(which),1);
+                                                            Address userAddress = addressList.get(0);
+                                                            LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
+                                                            geoLocate(latLng);
+                                                        } catch (Exception e) {
+                                                            Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
+                                                        }
+
+                                                    }
+                                                });
+                                                builder.show();
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                //Log.d(TAG, "Error retrieving data from Firebase");
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        //Log.d(TAG, "Error retrieving data from Firebase");
+                                    }
+                                });
+                            }
+                        });
+                        builder.show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        //Log.d(TAG, "Error retrieving data from Firebase");
+                    }
+                });
+            }
+        });
+
+        addFriendLocationButton4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show a dialog where the user can choose a friend from the list
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser == null) {
+                    // User is not logged in
+                    return;
+                }
+                String currentUserId = currentUser.getUid();
+                DatabaseReference friendsRef = FirebaseDatabase.getInstance().getReference("Users_Requests_And_Friends").child(currentUserId).child("Friends");
+
+                friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<String> friends = new ArrayList<>();
+                        for (DataSnapshot friendSnapshot : snapshot.getChildren()) {
+                            String friendName = friendSnapshot.child("fullName").getValue(String.class);
+                            friends.add(friendName);
+                        }
+
+                        // Show a dialog where the user can choose a friend from the list
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Mapview.this);
+                        builder.setTitle("Select a friend");
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(Mapview.this, android.R.layout.simple_list_item_1, friends);
+
+                        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Retrieve the selected friend's user_id from Firebase
+                                String selectedFriendName = adapter.getItem(which);
+                                Query selectedFriendQuery = friendsRef.orderByChild("fullName").equalTo(selectedFriendName).limitToFirst(1);
+                                selectedFriendQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (!snapshot.exists()) {
+                                            // Selected friend not found in the database
+                                            return;
+                                        }
+                                        String selectedFriendId = snapshot.getChildren().iterator().next().getKey();
+                                        // Retrieve the list of addresses associated with the user_id from Firebase
+                                        DatabaseReference addressesRef = FirebaseDatabase.getInstance().getReference("Users/" + selectedFriendId + "/locations");
+                                        addressesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                                List<String> addresses = new ArrayList<>();
+                                                int counter = 0;
+                                                for (DataSnapshot addressSnapshot : snapshot.getChildren()) {
+                                                    if (counter >= 1) {
+                                                        String address = addressSnapshot.getValue(String.class);
+                                                        addresses.add(address);
+                                                    }
+                                                    counter++;
+                                                }
+
+                                                if (addresses.size() == 1) {
+                                                    // No locations available for the selected friend
+                                                    Toast toast = Toast.makeText(getApplicationContext(), "No locations available", Toast.LENGTH_SHORT);
+                                                    toast.show();
+                                                    return;
+                                                }
+
+                                                // Show a dialog where the user can choose an address from the list
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(Mapview.this);
+                                                builder.setTitle("Select an address");
+
+                                                ArrayAdapter<String> adapter = new ArrayAdapter<>(Mapview.this, android.R.layout.simple_list_item_1, addresses);
+                                                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+
+                                                        autocompleteFragment4.setText(adapter.getItem(which));
+                                                        Geocoder geocoder = new Geocoder(Mapview.this);
+                                                        List<Address> addressList = null;
+                                                        try{
+                                                            addressList = geocoder.getFromLocationName(adapter.getItem(which),1);
+                                                            Address userAddress = addressList.get(0);
+                                                            LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
+                                                            geoLocate(latLng);
+                                                        } catch (Exception e) {
+                                                            Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
+                                                        }
+
+                                                    }
+                                                });
+                                                builder.show();
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                //Log.d(TAG, "Error retrieving data from Firebase");
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        //Log.d(TAG, "Error retrieving data from Firebase");
+                                    }
+                                });
+                            }
+                        });
+                        builder.show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        //Log.d(TAG, "Error retrieving data from Firebase");
+                    }
+                });
+            }
+        });
+
+        addFriendLocationButton5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show a dialog where the user can choose a friend from the list
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser == null) {
+                    // User is not logged in
+                    return;
+                }
+                String currentUserId = currentUser.getUid();
+                DatabaseReference friendsRef = FirebaseDatabase.getInstance().getReference("Users_Requests_And_Friends").child(currentUserId).child("Friends");
+
+                friendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        List<String> friends = new ArrayList<>();
+                        for (DataSnapshot friendSnapshot : snapshot.getChildren()) {
+                            String friendName = friendSnapshot.child("fullName").getValue(String.class);
+                            friends.add(friendName);
+                        }
+
+                        // Show a dialog where the user can choose a friend from the list
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Mapview.this);
+                        builder.setTitle("Select a friend");
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(Mapview.this, android.R.layout.simple_list_item_1, friends);
+
+                        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Retrieve the selected friend's user_id from Firebase
+                                String selectedFriendName = adapter.getItem(which);
+                                Query selectedFriendQuery = friendsRef.orderByChild("fullName").equalTo(selectedFriendName).limitToFirst(1);
+                                selectedFriendQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (!snapshot.exists()) {
+                                            // Selected friend not found in the database
+                                            return;
+                                        }
+                                        String selectedFriendId = snapshot.getChildren().iterator().next().getKey();
+                                        // Retrieve the list of addresses associated with the user_id from Firebase
+                                        DatabaseReference addressesRef = FirebaseDatabase.getInstance().getReference("Users/" + selectedFriendId + "/locations");
+                                        addressesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                                List<String> addresses = new ArrayList<>();
+                                                int counter = 0;
+                                                for (DataSnapshot addressSnapshot : snapshot.getChildren()) {
+                                                    if (counter >= 1) {
+                                                        String address = addressSnapshot.getValue(String.class);
+                                                        addresses.add(address);
+                                                    }
+                                                    counter++;
+                                                }
+
+                                                if (addresses.size() == 1) {
+                                                    // No locations available for the selected friend
+                                                    Toast toast = Toast.makeText(getApplicationContext(), "No locations available", Toast.LENGTH_SHORT);
+                                                    toast.show();
+                                                    return;
+                                                }
+
+                                                // Show a dialog where the user can choose an address from the list
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(Mapview.this);
+                                                builder.setTitle("Select an address");
+
+                                                ArrayAdapter<String> adapter = new ArrayAdapter<>(Mapview.this, android.R.layout.simple_list_item_1, addresses);
+                                                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+
+                                                        autocompleteFragment5.setText(adapter.getItem(which));
+                                                        Geocoder geocoder = new Geocoder(Mapview.this);
+                                                        List<Address> addressList = null;
+                                                        try{
+                                                            addressList = geocoder.getFromLocationName(adapter.getItem(which),1);
+                                                            Address userAddress = addressList.get(0);
+                                                            LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
+                                                            geoLocate(latLng);
+                                                        } catch (Exception e) {
+                                                            Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
+                                                        }
+
+                                                    }
+                                                });
+                                                builder.show();
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                //Log.d(TAG, "Error retrieving data from Firebase");
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        //Log.d(TAG, "Error retrieving data from Firebase");
+                                    }
+                                });
+                            }
+                        });
+                        builder.show();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        //Log.d(TAG, "Error retrieving data from Firebase");
+                    }
+                });
+            }
+        });
     }
 
     public void hideBar(){
@@ -476,6 +914,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     autocompleteFragment2.setText("");
                     autocompleteFragment2.setHint("Search 2nd Location");
                 }
+                addFriendLocationButton2.setVisibility(View.GONE);
+                addFriendLocationButton2.setEnabled(false);
                 break;
 
             case 3:
@@ -488,6 +928,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     autocompleteFragment3.setText("");
                     autocompleteFragment3.setHint("Search 3rd Location");
                 }
+                addFriendLocationButton3.setVisibility(View.GONE);
+                addFriendLocationButton4.setEnabled(false);
                 break;
 
             case 4:
@@ -500,6 +942,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     autocompleteFragment4.setText("");
                     autocompleteFragment4.setHint("Search 4th Location");
                 }
+                addFriendLocationButton4.setVisibility(View.GONE);
+                addFriendLocationButton4.setEnabled(false);
                 break;
 
             case 5:
@@ -510,6 +954,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
                     addAutocompleteButton.setVisibility(View.VISIBLE);
                     addAutocompleteButton.setEnabled(true);
+
+                    addFriendLocationButton5.setVisibility(View.GONE);
+                    addFriendLocationButton5.setEnabled(false);
 
                     locations[4] = null;
                     autocompleteFragment5.setText("");
@@ -535,6 +982,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
                     removeAutocompleteButton.setVisibility(View.VISIBLE);
                     removeAutocompleteButton.setEnabled(true);
+
+                    addFriendLocationButton2.setVisibility(View.VISIBLE);
+                    addFriendLocationButton2.setEnabled(true);
                 }
 
                 break;
@@ -546,6 +996,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     autocompleteView3.setVisibility(View.VISIBLE);
                     autocompleteView3.setEnabled(true);
                 }
+                addFriendLocationButton3.setVisibility(View.VISIBLE);
+                addFriendLocationButton3.setEnabled(true);
                 break;
 
             case 4:
@@ -555,6 +1007,8 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     autocompleteView4.setVisibility(View.VISIBLE);
                     autocompleteView4.setEnabled(true);
                 }
+                addFriendLocationButton4.setVisibility(View.VISIBLE);
+                addFriendLocationButton4.setEnabled(true);
                 break;
 
             case 5:
@@ -566,6 +1020,9 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 }
                 addAutocompleteButton.setVisibility(View.INVISIBLE);
                 addAutocompleteButton.setEnabled(false);
+
+                addFriendLocationButton5.setVisibility(View.VISIBLE);
+                addFriendLocationButton5.setEnabled(true);
                 break;
         }
     }
