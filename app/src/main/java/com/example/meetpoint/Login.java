@@ -16,6 +16,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 
@@ -106,13 +108,15 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                                                     System.out.println("Fetching FCM registration token failed");
                                                     return;
                                                 }
-                                                
+
                                                 // Get new FCM registration token
                                                 String token = task.getResult();
 
                                                 // Log and toast
                                                 System.out.println("PRINTING YOUR TOKEN:" + token);
-                                                //Toast.makeText(Login.this, token, Toast.LENGTH_SHORT).show();
+
+                                                // Save token to the database
+                                                saveTokenToDatabase(token);
                                             }
                                         });
 
@@ -131,5 +135,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         }
                     }
                 });
+    }
+    private void saveTokenToDatabase(String token) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String currentUserId = currentUser.getUid();
+            DatabaseReference tokenRef = FirebaseDatabase.getInstance().getReference("Users_Requests_And_Friends/" + currentUserId + "/deviceToken");
+            tokenRef.setValue(token);
+        }
     }
 }

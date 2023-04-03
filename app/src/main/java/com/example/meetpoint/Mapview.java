@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableResult;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -74,6 +77,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.maps.android.data.kml.KmlLayer;
 import com.google.maps.android.data.Feature;
 import com.google.maps.android.data.Geometry;
@@ -92,8 +97,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.io.InputStream;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -1227,65 +1235,83 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                             String friendId = friendSnapshot.getKey();
                             friendIds.add(friendId);
                         }
+
                         // Create a dialog to let the user select friends to notify
                         AlertDialog.Builder notifyBuilder = new AlertDialog.Builder(Mapview.this);
                         notifyBuilder.setTitle("Select Friends to Notify");
-                        String[] friendNames = new String[friendIds.size()];
+                        List<String> friendNames = new ArrayList<>();
                         boolean[] checkedFriends = new boolean[friendIds.size()];
+
+                        CountDownLatch latch = new CountDownLatch(friendIds.size());
+
                         for (int i = 0; i < friendIds.size(); i++) {
-                            final int index = i; // declare a new variable that is effectively final
+                            final int index = i;
                             String friendId = friendIds.get(index);
                             DatabaseReference friendsNameRef = FirebaseDatabase.getInstance().getReference("Users_Requests_And_Friends/" + currentUserId + "/Friends/" + friendId + "/fullName");
                             friendsNameRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     String friendName = snapshot.getValue(String.class);
-                                    friendNames[index] = friendName;
+                                    if (friendName != null) {
+                                        friendNames.add(friendName);
+                                    } else {
+                                        friendNames.add("Unknown");
+                                    }
                                     checkedFriends[index] = false;
+                                    latch.countDown();
                                 }
 
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
-                                    //Log.e(TAG, "Failed to read value.", error.toException());
+                                    latch.countDown();
                                 }
                             });
                         }
 
-
-                        notifyBuilder.setMultiChoiceItems(friendNames, checkedFriends, new DialogInterface.OnMultiChoiceClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                                // Update checkedFriends array
-                                checkedFriends[which] = isChecked;
+                        new Thread(() -> {
+                            try {
+                                latch.await();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
-                        });
-                        notifyBuilder.setPositiveButton("Notify", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Confirm with the user that they want to notify the selected friends
-                                AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(Mapview.this);
-                                confirmBuilder.setMessage("Are you sure you want to notify these friends?");
-                                confirmBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                            // Show the dialog after all the Firebase requests have finished
+                            runOnUiThread(() -> {
+                                notifyBuilder.setMultiChoiceItems(friendNames.toArray(new String[0]), checkedFriends, new DialogInterface.OnMultiChoiceClickListener() {
                                     @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // Send notification to selected friends
-                                        for (int i = 0; i < friendIds.size(); i++) {
-                                            String friendId = friendIds.get(i);
-                                            if (checkedFriends[i]) {
-                                                ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                                //sendNotification(friendId); // helper function to send a notification to a friend
-                                            }
-                                        }
+                                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                                        // Update checkedFriends array
+                                        checkedFriends[which] = isChecked;
                                     }
                                 });
-                                confirmBuilder.setNegativeButton("Cancel", null);
-                                AlertDialog confirmDialog = confirmBuilder.create();
-                                confirmDialog.show();
-                            }
-                        });
-                        notifyBuilder.setNegativeButton("Cancel", null);
-                        AlertDialog notifyDialog = notifyBuilder.create();
-                        notifyDialog.show();
+                                notifyBuilder.setPositiveButton("Notify", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // Confirm with the user that they want to notify the selected friends
+                                        AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(Mapview.this);
+                                        confirmBuilder.setMessage("Are you sure you want to notify these friends?");
+                                        confirmBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                // Send notification to selected friends
+                                                for (int i = 0; i < friendIds.size(); i++) {
+                                                    String friendId = friendIds.get(i);
+                                                    if (checkedFriends[i]) {
+                                                        sendNotification(friendId, place.getName(), place.getAddress());
+                                                    }
+                                                }
+                                            }
+                                        });
+                                        confirmBuilder.setNegativeButton("Cancel", null);
+                                        AlertDialog confirmDialog = confirmBuilder.create();
+                                        confirmDialog.show();
+                                    }
+                                });
+                                notifyBuilder.setNegativeButton("Cancel", null);
+                                AlertDialog notifyDialog = notifyBuilder.create();
+                                notifyDialog.show();
+                            });
+                        }).start();
                     }
 
                     @Override
@@ -1300,33 +1326,29 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
 
     }
 
-//    private void sendNotification(String friendId) {
-//        // Build the notification message
-//        String notificationMessage = "You have a new message from your friend!";
-//
-//        // Get a reference to the friend's device token from the database
-//        DatabaseReference friendTokenRef = FirebaseDatabase.getInstance().getReference("Users_Requests_And_Friends/" + friendId + "/deviceToken");
-//        friendTokenRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.exists()) {
-//                    String friendDeviceToken = dataSnapshot.getValue(String.class);
-//
-//                    // Use the friend's device token to send a notification using your preferred notification service
-//                    // For example, using Firebase Cloud Messaging:
-//                    FirebaseMessaging.getInstance().send(new RemoteMessage.Builder(friendDeviceToken)
-//                            .setMessageType("notification")
-//                            .putData("message", notificationMessage)
-//                            .build());
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                // Handle the error if there was an issue retrieving the friend's device token
-//            }
-//        });
-//    }
+    private void sendNotification(String friendId, String placeTitle, String placeAddress) {
+        // Build the notification message
+        String notificationMessage = String.format("Let's meet up at '%s' (%s)", placeTitle, placeAddress);
+
+        // Get a reference to the friend's device token from the database
+        DatabaseReference friendTokenRef = FirebaseDatabase.getInstance().getReference("Users_Requests_And_Friends/" + friendId + "/deviceToken");
+        friendTokenRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String friendDeviceToken = dataSnapshot.getValue(String.class);
+
+                    // Use MyFirebaseMessagingService to send the notification
+                    MyFirebaseMessagingService messagingService = new MyFirebaseMessagingService();
+                    MyFirebaseMessagingService.sendNotificationToDevice(Mapview.this, friendDeviceToken, notificationMessage);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
 
 
     private void searchGooglePlace(String name, LatLng position) {

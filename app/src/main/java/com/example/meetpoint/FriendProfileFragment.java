@@ -22,6 +22,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import android.widget.ImageView;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -48,6 +50,7 @@ public class FriendProfileFragment extends Fragment {
         textViewEmail = view.findViewById(R.id.textView_show_email);
         textViewMobile = view.findViewById(R.id.textView_show_mobileNumber);
         textViewLocation = view.findViewById(R.id.textView_show_location);
+        imageView = view.findViewById(R.id.imageViewProfileDP);
         authProfile = FirebaseAuth.getInstance();
 
         FirebaseUser firebaseUser = authProfile.getCurrentUser();
@@ -73,6 +76,15 @@ public class FriendProfileFragment extends Fragment {
                         for (int i = 1; i < locationsSnapshot.size(); i++) {
                             textViewLocation.append("Location " + i + ": " + locationsSnapshot.get(i) + "\n");
                         }
+                    }
+                    String profilePhotoUrl = user.getProfilePhotoUrl();
+                    if (profilePhotoUrl != null && !profilePhotoUrl.isEmpty()) {
+                        Glide.with(requireContext())
+                                .load(profilePhotoUrl)
+                                .placeholder(R.drawable.no_profile_pic)
+                                .into(imageView);
+                    } else {
+                        imageView.setImageResource(R.drawable.no_profile_pic);
                     }
                 }
             }
