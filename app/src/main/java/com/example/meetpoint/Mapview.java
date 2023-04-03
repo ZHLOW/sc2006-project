@@ -414,13 +414,14 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                         List<Address> addressList = null;
                                                         try{
                                                             addressList = geocoder.getFromLocationName(adapter.getItem(which),1);
-                                                        } catch (IOException e) {
-                                                            Toast.makeText(Mapview.this, "Address doesnt exist", Toast.LENGTH_SHORT).show();;
+                                                            Address userAddress = addressList.get(0);
+                                                            LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
+                                                            geoLocate(latLng);
+                                                        } catch (Exception e) {
+                                                            Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
                                                         }
 
-                                                        Address userAddress = addressList.get(0);
-                                                        LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
-                                                        geoLocate(latLng);
+
 
 //                                                        EditText editText = findViewById(R.id.places_autocomplete_search_input);
 //                                                        editText.setText(adapter.getItem(which));
