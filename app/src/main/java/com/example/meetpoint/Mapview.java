@@ -401,6 +401,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             addressList = geocoder.getFromLocationName(adapter.getItem(which),1);
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
+                                                            locations[0]=latLng;
                                                             geoLocate(latLng);
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
@@ -517,6 +518,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             addressList = geocoder.getFromLocationName(adapter.getItem(which),1);
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
+                                                            locations[1]=latLng;
                                                             geoLocate(latLng);
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
@@ -632,6 +634,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             addressList = geocoder.getFromLocationName(adapter.getItem(which),1);
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
+                                                            locations[2]=latLng;
                                                             geoLocate(latLng);
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
@@ -747,6 +750,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             addressList = geocoder.getFromLocationName(adapter.getItem(which),1);
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
+                                                            locations[3]=latLng;
                                                             geoLocate(latLng);
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
@@ -862,6 +866,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             addressList = geocoder.getFromLocationName(adapter.getItem(which),1);
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
+                                                            locations[4]=latLng;
                                                             geoLocate(latLng);
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
