@@ -1331,7 +1331,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
         String notificationMessage = String.format("Let's meet up at '%s' (%s)", placeTitle, placeAddress);
 
         // Get a reference to the friend's device token from the database
-        DatabaseReference friendTokenRef = FirebaseDatabase.getInstance().getReference("Users_Requests_And_Friends/" + friendId + "/deviceToken");
+        DatabaseReference friendTokenRef = FirebaseDatabase.getInstance().getReference("user_device/" + friendId + "/deviceToken");
         friendTokenRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

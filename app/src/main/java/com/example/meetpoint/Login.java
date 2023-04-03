@@ -140,7 +140,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String currentUserId = currentUser.getUid();
-            DatabaseReference tokenRef = FirebaseDatabase.getInstance().getReference("Users_Requests_And_Friends/" + currentUserId + "/deviceToken");
+            DatabaseReference tokenRef = FirebaseDatabase.getInstance().getReference("user_device/" + currentUserId + "/deviceToken");
             tokenRef.setValue(token);
         }
     }
