@@ -299,7 +299,17 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             public void onClick(View view) {
                 resultLatLng = findMP(locations);
-                geoLocate(resultLatLng);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(resultLatLng, DEFAULT_ZOOM));
+                    mapCircle = mMap.addCircle(new CircleOptions()
+                            .center(resultLatLng)
+                            .fillColor(Color.rgb(194, 217, 252))
+                            .strokeColor(Color.rgb(194, 217, 252))
+                            .radius(500));
+                    mMap.addMarker(new MarkerOptions()
+                            .position(resultLatLng)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+
+
 
             }
         });
@@ -1042,7 +1052,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                     .radius(500));
             mMap.addMarker(new MarkerOptions()
                     .position(latLng)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
         }
         else{
             Toast.makeText(Mapview.this, "LatLng returned null", Toast.LENGTH_SHORT).show();
