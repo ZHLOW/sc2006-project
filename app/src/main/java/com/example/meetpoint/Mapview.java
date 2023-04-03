@@ -478,6 +478,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
                                                             locations[0]=latLng;
+                                                            Marker marker = mMap.addMarker(new MarkerOptions()
+                                                                    .position(latLng)
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                                                            yellowmarkers[0]=marker;
                                                             geoLocate(latLng);
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
@@ -595,7 +599,12 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
                                                             locations[1]=latLng;
+                                                            Marker marker = mMap.addMarker(new MarkerOptions()
+                                                                    .position(latLng)
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                                                            yellowmarkers[1]=marker;
                                                             geoLocate(latLng);
+
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
                                                         }
@@ -711,6 +720,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
                                                             locations[2]=latLng;
+                                                            Marker marker = mMap.addMarker(new MarkerOptions()
+                                                                    .position(latLng)
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                                                            yellowmarkers[2]=marker;
                                                             geoLocate(latLng);
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
@@ -827,6 +840,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
                                                             locations[3]=latLng;
+                                                            Marker marker = mMap.addMarker(new MarkerOptions()
+                                                                    .position(latLng)
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                                                            yellowmarkers[3]=marker;
                                                             geoLocate(latLng);
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
@@ -943,6 +960,10 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                             Address userAddress = addressList.get(0);
                                                             LatLng latLng = new LatLng(userAddress.getLatitude(),userAddress.getLongitude());
                                                             locations[4]=latLng;
+                                                            Marker marker = mMap.addMarker(new MarkerOptions()
+                                                                    .position(latLng)
+                                                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+                                                            yellowmarkers[4]=marker;
                                                             geoLocate(latLng);
                                                         } catch (Exception e) {
                                                             Toast.makeText(Mapview.this, "Address doesn't exist", Toast.LENGTH_SHORT).show();;
