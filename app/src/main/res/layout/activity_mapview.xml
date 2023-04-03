@@ -130,4 +130,41 @@
         android:background="#AE009688"
         app:srcCompat="@drawable/ic_friends" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/add_friend_location_button"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/add_friend_location_button2"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="#AE009688"
+            app:srcCompat="@drawable/ic_friends" />
+
+        <ImageButton
+            android:id="@+id/add_friend_location_button3"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="#AE009688"
+            app:srcCompat="@drawable/ic_friends" />
+
+        <ImageButton
+            android:id="@+id/add_friend_location_button4"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="#AE009688"
+            app:srcCompat="@drawable/ic_friends" />
+
+        <ImageButton
+            android:id="@+id/add_friend_location_button5"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="#AE009688"
+            app:srcCompat="@drawable/ic_friends" />
+    </LinearLayout>
+
+
 </RelativeLayout>
