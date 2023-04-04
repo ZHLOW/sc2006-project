@@ -8,8 +8,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.Continuation;
-import com.google.firebase.functions.FirebaseFunctions;
-import com.google.firebase.functions.HttpsCallableResult;
+//import com.google.firebase.functions.FirebaseFunctions;
+//import com.google.firebase.functions.HttpsCallableResult;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -430,8 +430,6 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
             }
         });
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // NOT WORKING AS INTENDED: CAN CHOOSE FRIEND BUT UNABLE TO EXTRACT FRIEND'S LOCATIONS, SAYS NULL
         addFriendLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -489,7 +487,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                     counter++;
                                                 }
 
-                                                if (addresses.size() == 1) {
+                                                if (addresses.size() == 0) {
                                                     // No locations available for the selected friend
                                                     Toast toast = Toast.makeText(getApplicationContext(), "No locations available", Toast.LENGTH_SHORT);
                                                     toast.show();
@@ -560,7 +558,6 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                 });
             }
         });
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         addFriendLocationButton2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -619,7 +616,7 @@ public class Mapview extends AppCompatActivity implements OnMapReadyCallback {
                                                     counter++;
                                                 }
 
-                                                if (addresses.size() == 1) {
+                                                if (addresses.size() == 0) {
                                                     // No locations available for the selected friend
                                                     Toast toast = Toast.makeText(getApplicationContext(), "No locations available", Toast.LENGTH_SHORT);
                                                     toast.show();
